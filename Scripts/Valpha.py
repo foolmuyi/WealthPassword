@@ -12,7 +12,7 @@ import logging
 
 
 # 下载数据
-token = "dqPtVvOoRH"
+token = ""
 
 
 def getAllCode():
