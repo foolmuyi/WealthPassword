@@ -12,11 +12,8 @@ import re,time,js2py,logging
 from tenacity import *
 
 
-# 日志配置
-logging.basicConfig(filename='../log/'+dt.datetime.today().strftime("%y%m%d")+'.log',level=logging.INFO,format='%(asctime)s:%(levelname)s:%(message)s')
-
-
 # 获取所有基金代码
+@retry(stop=stop_after_attempt(5),wait=wait_random(min=1,max=3),retry=retry_if_exception_type(requests.exceptions.ChunkedEncodingError))
 def getCodeList():
 	print('Getting fund list.......')
 	# headers= {'User-Agent':str(UserAgent(use_cache_server=False, verify_ssl=False).random)}
@@ -53,39 +50,63 @@ def fillMissingValues(raw_list):
 	return raw_list_full
 
 
-@retry(stop=stop_after_attempt(5),wait=wait_random(min=1,max=3),retry=retry_if_exception_type(requests.exceptions.ChunkedEncodingError))
+# 日志配置
+logging.basicConfig(filename='../log/'+dt.datetime.today().strftime("%y%m%d")+'.log',level=logging.INFO,format='%(asctime)s:%(levelname)s:%(message)s')
+# 报错信息处理（格式化输出并写入日志）
+def printExceptions(code,e):
+	excp_type = str(e).split(':')[0]
+	# excp_type = excp_info[0]
+	print('\n')
+	print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+	if excp_type == 'SyntaxError':
+		print('Page not found: '+code)
+	elif excp_type == 'ReferenceError':
+		print('Special fund type: '+code)
+	elif excp_type == 'Length mismatch':
+		print('No accumulated worth trend data found: '+code)
+	else:
+		print('New error type: '+code+'!!!!!')
+		print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+		logging.error(code)
+		logging.error(e)
+		raise    # 若有其他类型异常（一般是网络连接异常），抛出，触发getOneFund函数的自动重试条件
+	print(e)
+	print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+	print('\n')
+	logging.error(code)
+	logging.error(e)
+
+
+@retry(stop=stop_after_attempt(5),wait=wait_random(min=1,max=3))
 def getOneFund(code):
 	print('Downloading data of '+code)
 	try:
 		url = 'http://fund.eastmoney.com/pingzhongdata/'+code+'.js'
-		res = requests.get(url)
+		try:
+			res = requests.get(url)
+		except:
+			raise
 		context = js2py.EvalJs()
 		context.execute(res.text)
 		raw_list = context.Data_ACWorthTrend.to_list()    # 原始累计净值走势，时间为时间戳格式
-		if None in [each[1] for each in raw_list]:    # 检查是否有缺失值
-			raw_list_full = fillMissingValues(raw_list)
-		else:
-			raw_list_full = raw_list
+		raw_list_full = raw_list
+		while None in [each[1] for each in raw_list_full]:    # 检查是否有缺失值，考虑到连续多个缺失值的情况，用while循环多次调用填充缺失值函数，直到没有缺失值
+			raw_list_full = fillMissingValues(raw_list_full)
 		change_list = [round(((raw_list_full[i][1]-raw_list_full[i-1][1])/raw_list_full[i-1][1])*100,2) if i != 0 else 0 for i in range(len(raw_list_full))]    # 计算每日涨跌幅
 		acc_worth_trend = [[time.strftime('%Y%m%d', time.localtime(raw_list_full[i][0]/1000)),raw_list_full[i][1],change_list[i]] for i in range(len(raw_list_full))]    # 构造[日期，净值，当日涨跌幅]格式数据
 		df_acc_worth_trend = pd.DataFrame(acc_worth_trend)
-		df_acc_worth_trend.columns = ['Date','AccWorth','Change']
+		try:
+			df_acc_worth_trend.columns = ['Date','AccWorth','Change']
+		except Exception as e:
+			printExceptions(code,e)
+			return
 		write2file(code, df_acc_worth_trend)
-	except js2py.internals.simplex.JsException as e:
-		print('------------------------------------')
-		print('Page not found: '+code)
-		print(e)
-		print('------------------------------------')
-		logging.error(code)
-		logging.error(e)
-	# else:
-	# 	print('Other Exceptions')
-	# 	logging.error(code)
-	# 	logging.error(Exception)
+	except Exception as e:
+		printExceptions(code,e)
 
 
 
-# getOneFund('000005')
+# getOneFund('000111')
 allCode = getCodeList()
 for each in allCode:
 	getOneFund(each[0])
