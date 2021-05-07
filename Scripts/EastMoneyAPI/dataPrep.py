@@ -24,7 +24,9 @@ class DataCollector(object):
 		res = requests.get(url)
 		context = js2py.EvalJs()  # 用js2py代替正则表达式定位JavaScript变量
 		context.execute(res.text)
-		fund_list = context.r.to_list()
+		raw_list = context.r.to_list()
+		fund_types = ['QDII', '混合-FOF', '股票型', '股票指数', '股票-FOF', 'QDII-ETF', 'ETF-场内', 'QDII-指数', '混合型', '联接基金']    # 去除了债券型、货币型等类型基金
+		fund_list = [each for each in raw_list if each[3] in fund_types]
 		return fund_list
 
 
@@ -73,9 +75,10 @@ class DataCollector(object):
 				logging.error(error_msg)
 				self.completed_num += 1
 			else:
-				print('New error type: '+fund_code+'!!!!!')
+				error_msg = 'New error type: '+fund_code+'!!!!!'
+				print(error_msg)
 				print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
-				logging.error(fund_code)
+				logging.error(error_msg)
 				logging.error(excp_type)
 				logging.error(e)
 				raise    # 若有其他类型异常（一般是网络连接异常），抛出，触发getOneFund函数的自动重试条件
@@ -84,10 +87,16 @@ class DataCollector(object):
 			print(error_msg)
 			logging.error(error_msg)
 			self.completed_num += 1
+		elif status_code == 514:
+			error_msg = 'Server error, wait 5 seconds: '+fund_code
+			print(error_msg)
+			logging.error(error_msg)
+			await asyncio.sleep(5)
+			raise    # 服务器错误，等待5秒后重试
 		else:
-			print('New status code: '+str(status_code))
-			logging.error(fund_code)
-			logging.error(status_code)
+			error_msg = 'New status code: '+str(status_code)+'   '+fund_code
+			print(error_msg)
+			logging.error(error_msg)
 			logging.error(e)
 		print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
 		print('\n')
@@ -141,7 +150,6 @@ class DataCollector(object):
 
 	async def dlAllFund(self):
 		all_fund = self.getCodeList()
-		# all_fund = all_fund[:233]
 		self.fund_num = len(all_fund)
 		for i in range(self.fund_num//100):
 			fund_list = all_fund[i*100:min((i+1)*100,self.fund_num+1)]
