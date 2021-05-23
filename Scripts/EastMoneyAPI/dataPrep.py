@@ -57,7 +57,7 @@ class DataCollector(object):
 
 
 	# 日志配置
-	logging.basicConfig(filename='../log/'+dt.datetime.today().strftime("%y%m%d")+'.log',level=logging.INFO,format='%(asctime)s:%(levelname)s:%(message)s')
+	logging.basicConfig(filename='../log/'+dt.datetime.today().strftime("%Y-%m-%d")+'.log',level=logging.INFO,format='%(asctime)s:%(levelname)s:%(message)s')
 	# 报错信息处理（格式化输出并写入日志）
 	async def printExceptions(self,fund_code,status_code,e):
 		print('\n')
@@ -129,7 +129,7 @@ class DataCollector(object):
 			while None in [each[1] for each in raw_list_full]:    # 检查是否有缺失值，考虑到连续多个缺失值的情况，用while循环多次调用填充缺失值函数，直到没有缺失值
 				raw_list_full = await self.fillMissingValues(raw_list_full)
 			change_list = [round(((raw_list_full[i][1]-raw_list_full[i-1][1])/raw_list_full[i-1][1])*100,2) if i != 0 else 0 for i in range(len(raw_list_full))]    # 计算每日涨跌幅
-			acc_worth_trend = [[time.strftime('%Y%m%d', time.localtime(raw_list_full[i][0]/1000)),raw_list_full[i][1],change_list[i]] for i in range(len(raw_list_full))]    # 构造[日期，净值，当日涨跌幅]格式数据
+			acc_worth_trend = [[time.strftime('%Y-%m-%d', time.localtime(raw_list_full[i][0]/1000)),raw_list_full[i][1],change_list[i]] for i in range(len(raw_list_full))]    # 构造[日期，净值，当日涨跌幅]格式数据
 			df_acc_worth_trend = pd.DataFrame(acc_worth_trend)
 			try:
 				df_acc_worth_trend.columns = ['Date','AccWorth','Change']
@@ -157,3 +157,4 @@ class DataCollector(object):
 
 collector = DataCollector()
 asyncio.run(collector.dlAllFund())
+# asyncio.run(collector.dl100Fund([['002943'],['005267']]))
