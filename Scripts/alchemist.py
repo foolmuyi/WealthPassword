@@ -88,12 +88,12 @@ def filter_by_sharpe(data_dir, start_date='2021', end_date=None, top=100):
 # print(list(set(half_year_code).intersection(set(one_year_code))))
 
 
-def getSignal(fund_code,start_date='2020',end_date=None):
+def getSignal(fund_code,test_date=None):
 	file_path = '../Data/'+fund_code+'.csv'
 	df = pd.read_csv(file_path)
 	df['Date'] = pd.to_datetime(df['Date'])
 	df = df.set_index('Date')
-	df = df[start_date:end_date]
+	df = df['2019':test_date]    # 为减少运算量，暂时取2019年以后的数据
 	accWorth = df['AccWorth'].values.tolist()
 	dailyChange = df['Change'].values.tolist()
 	try:
@@ -102,32 +102,25 @@ def getSignal(fund_code,start_date='2020',end_date=None):
 		return -1
 	new_ma5 = ma(ma5,period=5,weights=[1,2,3,5,8])
 	# plt.plot(accWorth,label='accWorth')
-	# plt.plot(ma5,label='MA5')
+	# # plt.plot(ma5,label='MA5')
 	# plt.plot(new_ma5,label='New MA5')
-	# plt.legend()
+	# # plt.legend()
 	# plt.show()
-	# slope = np.diff(new_ma5).tolist()
-	slope = np.gradient(new_ma5).tolist()
-	# sharpe_ratio = sharpeRatio(dailyChange)
-	if (slope[-1]>=0 and slope[-2]<0):
-		return 'Buy',accWorth
-	elif (slope[-1]<=0 and slope[-2]>0):
-		return 'Sell',accWorth
+	slope = np.diff(new_ma5).tolist()
+	# plt.plot(slope)
+	# # plt.scatter([i for i in range(len(slope))],slope)
+	# plt.hlines([-0.02],1,500,'r')
+	# plt.show()
+	if slope[-1]>0.01:
+		return 'Buy'
+	elif slope[-1]<=-0.02:
+		return 'Sell'
 	else:
-		return 'Hold',accWorth
-	# buy_spots = []
-	# sell_spots = []
-	# for i in range(len(slope)):
-	# 	if slope[i-1]>=0 and slope[i]<0:
-	# 		sell_spots.append(i)
-	# 	elif slope[i-1]<=0 and slope[i]>0:
-	# 		buy_spots.append(i)
-	# return buy_spots,sell_spots,accWorth,ma5,new_ma5
+		return 'Hold'
 
 
-# start_date = datetime.date(2020,1,2)
-# end_date = start_date+datetime.timedelta(days=365)
-# getSignal('320007',start_date,end_date)
+# test_date = datetime.date(2020,12,31)
+# getSignal('002190',test_date)
 
 # plt.plot(accWorth,label='Acc Worth')
 # plt.plot(ma5,label='MA5')
