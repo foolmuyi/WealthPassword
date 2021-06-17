@@ -2,11 +2,15 @@
 # -*- coding: utf-8 -*-
 
 
-import os
+import os,requests,json
 import time,datetime
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+
+
+import sys   
+sys.setrecursionlimit(100000)
 
 
 # 计算夏普比率
@@ -30,6 +34,13 @@ def ma(data,period=5,weights='default'):
 		weights = [1 for _ in range(period)] if weights=='default' else weights
 		ma_list = [data[i] if i<period-1 else np.sum(np.array(data[i-period+1:i+1])*np.array(weights))/np.sum(weights) for i in range(len(data))]
 		return ma_list
+
+
+
+# def ema(data,period):
+# 	(2*data[-1]+(period-1)*ema(data[:k-1],period)[-1])/(period+1)
+
+
 
 # 通过几只典型基金来计算所选时间段内开市天数
 def days_counter(data_dir,start_date,end_date):
@@ -102,21 +113,27 @@ def getSignal(fund_code,test_date=None):
 		return -1
 	new_ma5 = ma(ma5,period=5,weights=[1,2,3,5,8])
 	# plt.plot(accWorth,label='accWorth')
-	# # plt.plot(ma5,label='MA5')
-	# plt.plot(new_ma5,label='New MA5')
-	# # plt.legend()
+	# plt.plot(ma5,label='MA5')
+	# # plt.plot(new_ma5,label='New MA5')
+	# plt.legend()
 	# plt.show()
 	slope = np.diff(new_ma5).tolist()
 	# plt.plot(slope)
 	# # plt.scatter([i for i in range(len(slope))],slope)
 	# plt.hlines([-0.02],1,500,'r')
 	# plt.show()
-	if slope[-1]>0.01:
+	if slope[-1]>0:
 		return 'Buy'
-	elif slope[-1]<=-0.02:
+	elif slope[-1]<=0:
 		return 'Sell'
 	else:
 		return 'Hold'
+
+url= 'https://api.doctorxiong.club/v1/stock/kline/day?code=sh000001&startDate=2000-09-01&type=1'
+res = requests.get(url)
+data = json.loads(res.text)['data']
+close_price = [float(each[2]) for each in data]
+print(ema(close_price,144))
 
 
 # test_date = datetime.date(2020,12,31)
