@@ -7,8 +7,6 @@ import time,datetime
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-
-
 import sys   
 sys.setrecursionlimit(100000)
 
@@ -35,11 +33,20 @@ def ma(data,period=5,weights='default'):
 		ma_list = [data[i] if i<period-1 else np.sum(np.array(data[i-period+1:i+1])*np.array(weights))/np.sum(weights) for i in range(len(data))]
 		return ma_list
 
-
-
-# def ema(data,period):
-# 	(2*data[-1]+(period-1)*ema(data[:k-1],period)[-1])/(period+1)
-
+def ema(data,period):
+	if period <= 0:
+		raise IndexError('Period is '+str(period)+', which is less than 1')
+	elif len(data) < period:
+		raise IndexError('Cannot obtain EMA because the length of the data list is '+str(len(data))+' while the period is '+str(period))
+	else:
+		ema_list = []
+		for i in range(len(data)):
+			if i == 0:
+				ema_list.append(round(data[0],2))
+			else:
+				ema_today = (2*data[i]+(period-1)*ema_list[i-1])/(period+1)
+				ema_list.append(round(ema_today,2))
+	return ema_list
 
 
 # 通过几只典型基金来计算所选时间段内开市天数
@@ -104,39 +111,40 @@ def getSignal(fund_code,test_date=None):
 	df = pd.read_csv(file_path)
 	df['Date'] = pd.to_datetime(df['Date'])
 	df = df.set_index('Date')
-	df = df['2019':test_date]    # 为减少运算量，暂时取2019年以后的数据
+	df = df[:test_date]
+	# df = df['2019':test_date]    # 为减少运算量，暂时取2019年以后的数据
 	accWorth = df['AccWorth'].values.tolist()
 	dailyChange = df['Change'].values.tolist()
 	try:
 		ma5 = ma(accWorth,period=5,weights=[1,2,3,5,8])
+		ma10 = ma(accWorth,period=10,weights=[1,2,3,5,8,13,21,34,55,89])
 	except Exception as e:
 		return -1
 	new_ma5 = ma(ma5,period=5,weights=[1,2,3,5,8])
+	ema5 = ema(accWorth,5)
+	ema10 = ema(accWorth,10)
 	# plt.plot(accWorth,label='accWorth')
+	# plt.plot(ema5,label='EMA5')
+	# plt.plot(ema10,label='EMA10')
 	# plt.plot(ma5,label='MA5')
+	# plt.plot(ma10,label='MA10')
 	# # plt.plot(new_ma5,label='New MA5')
 	# plt.legend()
 	# plt.show()
-	slope = np.diff(new_ma5).tolist()
+	# slope = np.diff(new_ma5).tolist()
 	# plt.plot(slope)
 	# # plt.scatter([i for i in range(len(slope))],slope)
 	# plt.hlines([-0.02],1,500,'r')
 	# plt.show()
-	if slope[-1]>0:
+	if ema5[-1] > ema10[-1]:
 		return 'Buy'
-	elif slope[-1]<=0:
+	elif ema5[-1] < ema10[-1]:
 		return 'Sell'
 	else:
 		return 'Hold'
 
-url= 'https://api.doctorxiong.club/v1/stock/kline/day?code=sh000001&startDate=2000-09-01&type=1'
-res = requests.get(url)
-data = json.loads(res.text)['data']
-close_price = [float(each[2]) for each in data]
-print(ema(close_price,144))
 
-
-# test_date = datetime.date(2020,12,31)
+# test_date = datetime.date(2019,10,31)
 # getSignal('002190',test_date)
 
 # plt.plot(accWorth,label='Acc Worth')

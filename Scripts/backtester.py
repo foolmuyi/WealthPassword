@@ -81,7 +81,7 @@ class backTester(object):
 
 fund_code = '002190'
 start_date = datetime.date(2020,1,2)
-end_date = datetime.date(2021,5,21)
+end_date = datetime.date(2020,12,31)
 tester1 = backTester(fund_code,start_date,end_date)
 tester1.test()
 tester1.show_plot()
