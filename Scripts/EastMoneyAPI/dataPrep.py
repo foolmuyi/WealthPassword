@@ -149,7 +149,7 @@ class DataCollector(object):
 
 
 	async def dlAllFund(self):
-		all_fund = self.getCodeList()
+		all_fund = self.getCodeList()[4000:]
 		self.fund_num = len(all_fund)
 		for i in range(self.fund_num//100):
 			fund_list = all_fund[i*100:min((i+1)*100,self.fund_num+1)]

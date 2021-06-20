@@ -50,8 +50,9 @@ class backTester(object):
 	def Sell(self):
 		if self.myShares > 0:
 			tomo,tomo_accWorth = self.getTomoPrice()
-			self.balance += self.myShares*tomo_accWorth
-			print('Sell '+str(self.myShares*tomo_accWorth)+' on '+str(tomo))
+			sell_amount = round(self.myShares*tomo_accWorth*0.995,2)    # 粗略假设手续费0.5%
+			self.balance += sell_amount    # 粗略假设手续费0.5%
+			print('Sell '+str(sell_amount)+' on '+str(tomo))
 			self.myShares = 0
 			self.sell_date.append(tomo)
 
@@ -71,17 +72,17 @@ class backTester(object):
 			elif signal == 'Sell':
 				self.Sell()
 		print('Total balance: '+str(self.balance+self.myShares*self.accWorth_series[str(self.today)]))
-		print('Total ratio of return: '+str(((self.balance+self.myShares*self.accWorth_series[str(self.today)])-5000)/5000))
+		print('Total ratio of return: '+str(round(((self.balance+self.myShares*self.accWorth_series[str(self.today)])-5000)/5000,2)))
 		try:
-			r_ratio = ((self.balance+self.myShares*self.accWorth_series[str(self.today)])-5000)/5000
+			r_ratio = round(((self.balance+self.myShares*self.accWorth_series[str(self.today)])-5000)/5000,2)
 			return r_ratio
 		except:
 			return 0
 
 
 fund_code = '002190'
-start_date = datetime.date(2020,1,2)
-end_date = datetime.date(2020,12,31)
+start_date = datetime.date(2018,5,21)
+end_date = datetime.date(2021,5,21)
 tester1 = backTester(fund_code,start_date,end_date)
 tester1.test()
 tester1.show_plot()

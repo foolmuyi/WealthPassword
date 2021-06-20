@@ -7,8 +7,7 @@ import time,datetime
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import sys   
-sys.setrecursionlimit(100000)
+import mplfinance
 
 
 # 计算夏普比率
@@ -136,9 +135,9 @@ def getSignal(fund_code,test_date=None):
 	# # plt.scatter([i for i in range(len(slope))],slope)
 	# plt.hlines([-0.02],1,500,'r')
 	# plt.show()
-	if ema5[-1] > ema10[-1]:
+	if (accWorth[-1]-max(ema5[-1],ema10[-1])) > (abs(ema5[-1]-ema10[-1])):
 		return 'Buy'
-	elif ema5[-1] < ema10[-1]:
+	elif (min(ema5[-1],ema10[-1])-accWorth[-1]) > (abs(ema5[-1]-ema10[-1])):
 		return 'Sell'
 	else:
 		return 'Hold'
@@ -156,3 +155,72 @@ def getSignal(fund_code,test_date=None):
 # plt.vlines(sell_spots,min(accWorth),max(accWorth),color='r')
 # plt.legend()
 # plt.show()
+
+
+
+
+
+
+# # Binance Test
+
+# columns = ['OpenTime','Open','High','Low','Close']
+# EU_1h_01 = pd.read_csv('./ETHUSDT-1h-2021-01.csv').iloc[:,0:5]
+# EU_1h_02 = pd.read_csv('./ETHUSDT-1h-2021-02.csv').iloc[:,0:5]
+# EU_1h_03 = pd.read_csv('./ETHUSDT-1h-2021-03.csv').iloc[:,0:5]
+# EU_1h_04 = pd.read_csv('./ETHUSDT-1h-2021-04.csv').iloc[:,0:5]
+# EU_1h_05 = pd.read_csv('./ETHUSDT-1h-2021-05.csv').iloc[:,0:5]
+# EU_1h_01.columns=columns
+# EU_1h_02.columns=columns
+# EU_1h_03.columns=columns
+# EU_1h_04.columns=columns
+# EU_1h_05.columns=columns
+# EU_1h_2021 = pd.concat([EU_1h_01,EU_1h_02,EU_1h_03,EU_1h_04,EU_1h_05],ignore_index=True)
+# close_price = EU_1h_2021['Close'].values.tolist()
+# open_price = EU_1h_2021['Open'].values.tolist()
+# # EU_15m_2021['OpenTime'] = pd.to_datetime(EU_15m_2021['OpenTime'])
+# # EU_15m_2021 = EU_15m_2021.set_index('OpenTime')
+# # mplfinance.plot(EU_15m_2021,type='candle')
+# # plt.show()
+# for fast_param in range(3,24):
+# 	for slow_param in range(fast_param+1,24):
+# 		balance = 100
+# 		myShare = 0
+# 		state = 'sleeping'
+# 		for i in range(slow_param,len(close_price)):
+# 			ema_fast = ema(close_price[:i],fast_param)
+# 			ema_slow = ema(close_price[:i],slow_param)
+# 			if (ema_fast[-2] < ema_slow[-2]) and (ema_fast[-1] > ema_slow[-1]) and (np.diff(ema_slow)[-1]>0):
+# 				if state == 'sleeping':
+# 					state = 'bought'
+# 					buy_price = (close_price[i+1]+open_price[i+1])/2
+# 					myShare = balance/buy_price
+# 					balance = 0
+# 					# print('做多: '+str(buy_price))
+# 					# print('My share: '+str(myShare))
+# 				elif state == 'sold':
+# 					state = 'sleeping'
+# 					buy_price = (close_price[i+1]+open_price[i+1])/2
+# 					profit = (sell_price-buy_price)*myShare
+# 					balance = buy_price*myShare+profit
+# 					myShare = 0
+# 					# print('平空: '+str(buy_price)+'  profit: '+str(profit))
+# 				else:
+# 					pass
+# 			elif (ema_fast[-2] > ema_slow[-2]) and (ema_fast[-1] < ema_slow[-1]) and (np.diff(ema_slow)[-1]<0):
+# 				if state == 'sleeping':
+# 					state = 'sold'
+# 					sell_price = (close_price[i+1]+open_price[i+1])/2
+# 					myShare = balance/sell_price
+# 					balance = 0
+# 					# print('做空: '+str(sell_price))
+# 					# print('My share: '+str(myShare))
+# 				elif state == 'bought':
+# 					state = 'sleeping'
+# 					sell_price = (close_price[i+1]+open_price[i+1])/2
+# 					profit = (sell_price-buy_price)*myShare
+# 					balance = sell_price*myShare+profit
+# 					myShare = 0
+# 					# print('平多: '+str(sell_price)+'  Profit: '+str(profit))
+# 				else:
+# 					pass
+# 		print('EMA'+str(fast_param)+'+EMA'+str(slow_param)+': '+str(balance+myShare*close_price[-1]))
