@@ -6,6 +6,8 @@ import os,requests,json
 import time,datetime
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+import multiprocessing
 
 
 def ema(data,period):
@@ -39,70 +41,97 @@ EU_1h_05.columns = columns
 EU_1h_6m = pd.concat([EU_1h_12,EU_1h_01,EU_1h_02,EU_1h_03,EU_1h_04,EU_1h_05],ignore_index=True)
 close_price = EU_1h_6m['Close'].values.tolist()
 open_price = EU_1h_6m['Open'].values.tolist()
+
+
+def backtest(fast_param,slow_param):
+	balance = 100
+	totalBalance = [balance]
+	myShare = 0
+	num = 0
+	buy_price = 0    # numba加速要求变量提前定义
+	sell_price = 0    # numba加速要求变量提前定义
+	state = 'sleeping'
+	for i in range(slow_param+fast_param,len(close_price)):
+		ema_fast = ema(close_price[:i],fast_param)
+		ema_slow = ema(close_price[:i],slow_param)
+		ema_indicator = ema(close_price[:i],slow_param+fast_param)
+		if (ema_fast[-2] < ema_slow[-2]) and (ema_fast[-1] > ema_slow[-1]) and (np.diff(ema_slow)[-1]>0):
+			if (state == 'sleeping') and (np.diff(ema_indicator)[-1]>0):
+				state = 'bought'
+				buy_price = (close_price[i+1]+open_price[i+1])/2
+				myShare = balance/buy_price
+				totalBalance.append(balance)    # 收益曲线统计
+				balance = 0
+				num += 1
+				# print('做多: '+str(buy_price))
+			elif (state == 'sold') and (np.diff(ema_indicator)[-1]>0):
+				state = 'bought'
+				buy_price = (close_price[i+1]+open_price[i+1])/2
+				profit = (sell_price-buy_price)*myShare
+				balance = buy_price*myShare+profit
+				myShare = balance/buy_price
+				totalBalance.append(balance)    # 收益曲线统计
+				balance = 0
+				num += 1
+				# print('平空做多: '+str(buy_price))
+			elif state == 'sold':
+				state = 'sleeping'
+				buy_price = (close_price[i+1]+open_price[i+1])/2
+				profit = (sell_price-buy_price)*myShare
+				balance = buy_price*myShare+profit
+				totalBalance.append(balance)    # 收益曲线统计
+				myShare = 0
+				num += 1
+				# print('平空: '+str(buy_price)+'  profit: '+str(profit))
+			else:
+				pass
+		elif (ema_fast[-2] > ema_slow[-2]) and (ema_fast[-1] < ema_slow[-1]) and (np.diff(ema_slow)[-1]<0):
+			if (state == 'sleeping') and (np.diff(ema_indicator)[-1]<0):
+				state = 'sold'
+				sell_price = (close_price[i+1]+open_price[i+1])/2
+				myShare = balance/sell_price
+				totalBalance.append(balance)    # 收益曲线统计
+				balance = 0
+				num += 1
+				# print('做空: '+str(sell_price))
+			elif (state == 'bought') and (np.diff(ema_indicator)[-1]<0):
+				state = 'sold'
+				sell_price = (close_price[i+1]+open_price[i+1])/2
+				profit = (sell_price-buy_price)*myShare
+				balance = sell_price*myShare+profit
+				myShare = balance/sell_price
+				totalBalance.append(balance)    # 收益曲线统计
+				balance = 0
+				num += 1
+				# print('平多做空: '+str(sell_price)+'  Profit: '+str(profit))
+			elif state == 'bought':
+				state = 'sleeping'
+				sell_price = (close_price[i+1]+open_price[i+1])/2
+				profit = (sell_price-buy_price)*myShare
+				balance = sell_price*myShare+profit
+				totalBalance.append(balance)    # 收益曲线统计
+				myShare = 0
+				num += 1
+				# print('平多: '+str(sell_price)+'  Profit: '+str(profit))
+			else:
+				pass
+	print('EMA'+str(fast_param)+'+EMA'+str(slow_param)+': '+str(balance+myShare*close_price[-1])+'    平均交易间隔时间： '+str(6*30*24/num))
+	totalBalance.append(balance+myShare*close_price[-1])    # 收益曲线统计
+	# plt.plot(totalBalance)
+	# plt.show()
+
+
+pool = multiprocessing.Pool(8)
 for fast_param in range(3,24):
-	for slow_param in range(fast_param+1,24):
-		balance = 100
-		myShare = 0
-		num = 0
-		state = 'sleeping'
-		for i in range(slow_param+fast_param,len(close_price)):
-			ema_fast = ema(close_price[:i],fast_param)
-			ema_slow = ema(close_price[:i],slow_param)
-			ema_indicator = ema(close_price[:i],slow_param+fast_param)
-			if (ema_fast[-2] < ema_slow[-2]) and (ema_fast[-1] > ema_slow[-1]) and (np.diff(ema_slow)[-1]>0):
-				if (state == 'sleeping') and (np.diff(ema_indicator)[-1]>0):
-					state = 'bought'
-					buy_price = (close_price[i+1]+open_price[i+1])/2
-					myShare = balance/buy_price
-					balance = 0
-					num += 1
-					# print('做多: '+str(buy_price))
-				elif (state == 'sold') and (np.diff(ema_indicator)[-1]>0):
-					state = 'bought'
-					buy_price = (close_price[i+1]+open_price[i+1])/2
-					profit = (sell_price-buy_price)*myShare
-					balance = buy_price*myShare+profit
-					myShare = balance/buy_price
-					balance = 0
-					num += 1
-					# print('平空做多: '+str(buy_price))
-				elif state == 'sold':
-					state = 'sleeping'
-					buy_price = (close_price[i+1]+open_price[i+1])/2
-					profit = (sell_price-buy_price)*myShare
-					balance = buy_price*myShare+profit
-					myShare = 0
-					num += 1
-					# print('平空: '+str(buy_price)+'  profit: '+str(profit))
-				else:
-					pass
-			elif (ema_fast[-2] > ema_slow[-2]) and (ema_fast[-1] < ema_slow[-1]) and (np.diff(ema_slow)[-1]<0):
-				if (state == 'sleeping') and (np.diff(ema_indicator)[-1]<0):
-					state = 'sold'
-					sell_price = (close_price[i+1]+open_price[i+1])/2
-					myShare = balance/sell_price
-					balance = 0
-					num += 1
-					# print('做空: '+str(sell_price))
-				elif (state == 'bought') and (np.diff(ema_indicator)[-1]<0):
-					state = 'sold'
-					sell_price = (close_price[i+1]+open_price[i+1])/2
-					profit = (sell_price-buy_price)*myShare
-					balance = sell_price*myShare+profit
-					myShare = balance/sell_price
-					balance = 0
-					num += 1
-					# print('平多做空: '+str(sell_price)+'  Profit: '+str(profit))
-				elif state == 'bought':
-					state = 'sleeping'
-					sell_price = (close_price[i+1]+open_price[i+1])/2
-					profit = (sell_price-buy_price)*myShare
-					balance = sell_price*myShare+profit
-					myShare = 0
-					num += 1
-					# print('平多: '+str(sell_price)+'  Profit: '+str(profit))
-				else:
-					pass
-		print('EMA'+str(fast_param)+'+EMA'+str(slow_param)+': '+str(balance+myShare*close_price[-1])+'    平均持仓时间： '+str(6*30*24/num))
+	for slow_param in range(fast_param+1,fast_param+10):
+		pool.apply_async(backtest,(fast_param,slow_param,))
+
+pool.close()
+pool.join()
+
+
 
 # EMA24+EMA30: 2100+
+
+# TODO:
+# 根据收益-参数组合图寻找最佳参数组合
