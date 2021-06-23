@@ -43,15 +43,14 @@ close_price = EU_1h_6m['Close'].values.tolist()
 open_price = EU_1h_6m['Open'].values.tolist()
 
 
-def backtest(fast_param,slow_param):
+def backtest(fast_param,slow_param,param_comb):
 	balance = 100
-	totalBalance = [balance]
+	totalBalance = [balance]    # 收益曲线
 	myShare = 0
-	num = 0
-	buy_price = 0    # numba加速要求变量提前定义
-	sell_price = 0    # numba加速要求变量提前定义
 	state = 'sleeping'
-	for i in range(slow_param+fast_param,len(close_price)):
+	win = 0    # 胜率统计
+	loss = 0    # 胜率统计
+	for i in range(fast_param+slow_param,len(close_price)):
 		ema_fast = ema(close_price[:i],fast_param)
 		ema_slow = ema(close_price[:i],slow_param)
 		ema_indicator = ema(close_price[:i],slow_param+fast_param)
@@ -62,8 +61,7 @@ def backtest(fast_param,slow_param):
 				myShare = balance/buy_price
 				totalBalance.append(balance)    # 收益曲线统计
 				balance = 0
-				num += 1
-				# print('做多: '+str(buy_price))
+				print('做多: '+str(buy_price))
 			elif (state == 'sold') and (np.diff(ema_indicator)[-1]>0):
 				state = 'bought'
 				buy_price = (close_price[i+1]+open_price[i+1])/2
@@ -72,8 +70,11 @@ def backtest(fast_param,slow_param):
 				myShare = balance/buy_price
 				totalBalance.append(balance)    # 收益曲线统计
 				balance = 0
-				num += 1
-				# print('平空做多: '+str(buy_price))
+				if profit > 0:    # 胜率统计
+					win +=1
+				else:
+					loss += 1
+				print('平空做多: '+str(buy_price)+'  Profit: '+str(profit))
 			elif state == 'sold':
 				state = 'sleeping'
 				buy_price = (close_price[i+1]+open_price[i+1])/2
@@ -81,8 +82,11 @@ def backtest(fast_param,slow_param):
 				balance = buy_price*myShare+profit
 				totalBalance.append(balance)    # 收益曲线统计
 				myShare = 0
-				num += 1
-				# print('平空: '+str(buy_price)+'  profit: '+str(profit))
+				if profit > 0:    # 胜率统计
+					win +=1
+				else:
+					loss += 1
+				print('平空: '+str(buy_price)+'  profit: '+str(profit))
 			else:
 				pass
 		elif (ema_fast[-2] > ema_slow[-2]) and (ema_fast[-1] < ema_slow[-1]) and (np.diff(ema_slow)[-1]<0):
@@ -92,8 +96,7 @@ def backtest(fast_param,slow_param):
 				myShare = balance/sell_price
 				totalBalance.append(balance)    # 收益曲线统计
 				balance = 0
-				num += 1
-				# print('做空: '+str(sell_price))
+				print('做空: '+str(sell_price))
 			elif (state == 'bought') and (np.diff(ema_indicator)[-1]<0):
 				state = 'sold'
 				sell_price = (close_price[i+1]+open_price[i+1])/2
@@ -102,8 +105,11 @@ def backtest(fast_param,slow_param):
 				myShare = balance/sell_price
 				totalBalance.append(balance)    # 收益曲线统计
 				balance = 0
-				num += 1
-				# print('平多做空: '+str(sell_price)+'  Profit: '+str(profit))
+				if profit > 0:    # 胜率统计
+					win +=1
+				else:
+					loss += 1
+				print('平多做空: '+str(sell_price)+'  Profit: '+str(profit))
 			elif state == 'bought':
 				state = 'sleeping'
 				sell_price = (close_price[i+1]+open_price[i+1])/2
@@ -111,27 +117,44 @@ def backtest(fast_param,slow_param):
 				balance = sell_price*myShare+profit
 				totalBalance.append(balance)    # 收益曲线统计
 				myShare = 0
-				num += 1
-				# print('平多: '+str(sell_price)+'  Profit: '+str(profit))
+				if profit > 0:    # 胜率统计
+					win +=1
+				else:
+					loss += 1
+				print('平多: '+str(sell_price)+'  Profit: '+str(profit))
 			else:
 				pass
-	print('EMA'+str(fast_param)+'+EMA'+str(slow_param)+': '+str(balance+myShare*close_price[-1])+'    平均交易间隔时间： '+str(6*30*24/num))
+	print('EMA'+str(fast_param)+'+EMA'+str(slow_param)+': '+str(balance+myShare*close_price[-1])+'    平均交易间隔: '+str(6*30*24/len(totalBalance))+'    胜率: '+str(win/(win+loss)))
 	totalBalance.append(balance+myShare*close_price[-1])    # 收益曲线统计
-	# plt.plot(totalBalance)
-	# plt.show()
+	# param_comb[int(str(fast_param)+str(slow_param))] = totalBalance[-1]    # 参数组合收益变化
+	param_comb[int(str(fast_param)+str(slow_param))] = win/(win+loss)    # 参数组合胜率变化
+	plt.plot(totalBalance)
+	plt.show()
 
 
-pool = multiprocessing.Pool(8)
-for fast_param in range(3,24):
-	for slow_param in range(fast_param+1,fast_param+10):
-		pool.apply_async(backtest,(fast_param,slow_param,))
-
-pool.close()
-pool.join()
+backtest(3,52,{})
 
 
+# 寻找最佳参数组合
 
-# EMA24+EMA30: 2100+
+# pool = multiprocessing.Pool(8)
+# manager = multiprocessing.Manager()
+# param_comb = manager.dict()
+# for fast_param in range(3,13):
+# 	for slow_param in range(30,55):
+# 		pool.apply_async(backtest,(fast_param,slow_param,param_comb,))
 
-# TODO:
-# 根据收益-参数组合图寻找最佳参数组合
+# pool.close()
+# pool.join()
+
+# result = dict(sorted(param_comb.items(), key=lambda x: x[0]))
+# x_keys = []
+# y_values = []
+# for each in result.items():
+# 	x_keys.append(str(each[0]))
+# 	y_values.append(each[1])
+# plt.plot(x_keys,y_values)
+# ax = plt.axes()
+# ax.xaxis.set_major_locator(plt.MultipleLocator(10))
+# plt.show()
+
