@@ -122,32 +122,23 @@ def getSignal(fund_code,test_date=None):
 		ma10 = ma(accWorth,period=10,weights=[1,2,3,5,8,13,21,34,55,89])
 	except Exception as e:
 		return -1
-	new_ma5 = ma(ma5,period=5,weights=[1,2,3,5,8])
 	ema5 = ema(accWorth,5)
-	ema10 = ema(accWorth,10)
+	ema20 = ema(accWorth,20)
 	# plt.plot(accWorth,label='accWorth')
 	# plt.plot(ema5,label='EMA5')
-	# plt.plot(ema10,label='EMA10')
-	# plt.plot(ma5,label='MA5')
-	# plt.plot(ma10,label='MA10')
-	# # plt.plot(new_ma5,label='New MA5')
+	# plt.plot(ema20,label='EMA20')
 	# plt.legend()
 	# plt.show()
-	# slope = np.diff(new_ma5).tolist()
-	# plt.plot(slope)
-	# # plt.scatter([i for i in range(len(slope))],slope)
-	# plt.hlines([-0.02],1,500,'r')
-	# plt.show()
-	if (accWorth[-1]-max(ema5[-1],ema10[-1])) > (abs(ema5[-1]-ema10[-1])):
+	if (ema5[-2] <= ema20[-2]) and (ema5[-1] > ema20[-1]):
 		return 'Buy'
-	elif (min(ema5[-1],ema10[-1])-accWorth[-1]) > (abs(ema5[-1]-ema10[-1])):
+	elif (ema5[-2] >= ema20[-2]) and (ema5[-1] < ema20[-1]):
 		return 'Sell'
 	else:
 		return 'Hold'
 
 
-# test_date = datetime.date(2019,10,31)
-# getSignal('002190',test_date)
+# test_date = datetime.date(2020,10,31)
+# getSignal('320007',test_date)
 
 # plt.plot(accWorth,label='Acc Worth')
 # plt.plot(ma5,label='MA5')
