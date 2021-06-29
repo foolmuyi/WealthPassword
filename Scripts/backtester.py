@@ -2,10 +2,13 @@
 # -*- coding: utf-8 -*-
 
 
-import requests,json,os,time
+import os
+import json
+import requests
+import time
+import datetime
 import pandas as pd
 import numpy as np
-import datetime
 import matplotlib.pyplot as plt
 import mpl_toolkits.mplot3d
 import alchemist as am
@@ -43,16 +46,17 @@ class backTester(object):
 		if self.balance > 0:
 			tomo,tomo_accWorth = self.getTomoPrice()
 			self.myShares += self.balance/tomo_accWorth
-			print('Buy '+str(self.balance)+' on '+str(tomo))
+			# print('Buy '+str(self.balance)+' on '+str(tomo))
 			self.balance = 0
 			self.buy_date.append(tomo)
 
 	def Sell(self):
 		if self.myShares > 0:
 			tomo,tomo_accWorth = self.getTomoPrice()
-			sell_amount = round(self.myShares*tomo_accWorth*0.995,2)    # 粗略假设手续费0.5%
-			self.balance += sell_amount    # 粗略假设手续费0.5%
-			print('Sell '+str(sell_amount)+' on '+str(tomo))
+			# sell_amount = round(self.myShares*tomo_accWorth*0.995,2)    # 粗略假设手续费0.5%
+			sell_amount = round(self.myShares*tomo_accWorth,2)
+			self.balance += sell_amount
+			# print('Sell '+str(sell_amount)+' on '+str(tomo))
 			self.myShares = 0
 			self.sell_date.append(tomo)
 
@@ -62,17 +66,17 @@ class backTester(object):
 		plt.vlines(self.sell_date,min(self.accWorth_series),max(self.accWorth_series),color='r')
 		plt.show()
 
-	def test(self):
+	def test(self,fast_param,slow_param):
 		self.readFile()
 		for i in range((self.end_date-self.start_date).days):
 			self.today = self.start_date+datetime.timedelta(days=i)
-			signal = am.getSignal(self.fund_code,self.today)
+			signal = am.getSignal(self.fund_code,self.today,fast_param,slow_param)
 			if signal == 'Buy':
 				self.Buy()
 			elif signal == 'Sell':
 				self.Sell()
-		print('Total balance: '+str(self.balance+self.myShares*self.accWorth_series[str(self.today)]))
-		print('Total ratio of return: '+str(round(((self.balance+self.myShares*self.accWorth_series[str(self.today)])-5000)/5000,2)))
+		# print('Total balance: '+str(self.balance+self.myShares*self.accWorth_series[str(self.today)]))
+		# print('Total ratio of return: '+str(round(((self.balance+self.myShares*self.accWorth_series[str(self.today)])-5000)/5000,2)))
 		try:
 			r_ratio = round(((self.balance+self.myShares*self.accWorth_series[str(self.today)])-5000)/5000,2)
 			return r_ratio
@@ -80,13 +84,31 @@ class backTester(object):
 			return 0
 
 
-fund_code = '004789'
-start_date = datetime.date(2019,5,21)
-end_date = datetime.date(2021,5,21)
-tester1 = backTester(fund_code,start_date,end_date)
-tester1.test()
-tester1.show_plot()
 
+# fund_code = '004789'
+code_list = ['005969','006253','007193','501058','006448','004235','007995','008764','002360','005856','004533','004041']
+start_date = datetime.date(2020,6,10)
+end_date = datetime.date(2021,6,10)
+for fast_param in range(2,10):
+	for slow_param in range(fast_param+1,20,2):
+		ratio_avg = 0
+		for fund_code in code_list:
+			tester1 = backTester(fund_code,start_date,end_date)
+			ratio_avg += tester1.test(fast_param,slow_param)
+		ratio_avg = ratio_avg/len(code_list)
+		print('{}{}+{}{}: {:.2f}'.format('EMA',fast_param,'EMA',slow_param,ratio_avg))
+
+# tester1.show_plot()
+
+ratio_ref = 0
+for fund_code in code_list:
+	file_path = '../Data/'+fund_code+'.csv'
+	df = pd.read_csv(file_path)
+	df['Date'] = pd.to_datetime(df['Date'])
+	df = df.set_index('Date')
+	accWorth_series = pd.Series(df['AccWorth'], index=df.index)
+	ratio_ref += (accWorth_series[str(end_date)]-accWorth_series[str(start_date)])/accWorth_series[str(start_date)]
+print('{}: {:.2f}'.format('ref',ratio_ref/len(code_list)))
 
 
 # fund_code_list = []

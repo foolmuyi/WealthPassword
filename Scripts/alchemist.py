@@ -108,7 +108,7 @@ def filter_by_sharpe(data_dir, start_date='2021', end_date=None, top=100):
 # print(list(set(half_year_code).intersection(set(one_year_code))))
 
 
-def getSignal(fund_code,test_date=None):
+def getSignal(fund_code,test_date=None,fast_param=5,slow_param=20):
 	file_path = '../Data/'+fund_code+'.csv'
 	df = pd.read_csv(file_path)
 	df['Date'] = pd.to_datetime(df['Date'])
@@ -117,28 +117,28 @@ def getSignal(fund_code,test_date=None):
 	# df = df['2019':test_date]    # 为减少运算量，暂时取2019年以后的数据
 	accWorth = df['AccWorth'].values.tolist()
 	dailyChange = df['Change'].values.tolist()
-	try:
-		ma5 = ma(accWorth,period=5,weights=[1,2,3,5,8])
-		ma10 = ma(accWorth,period=10,weights=[1,2,3,5,8,13,21,34,55,89])
-	except Exception as e:
-		return -1
-	ema5 = ema(accWorth,5)
-	ema20 = ema(accWorth,20)
+	# try:
+	# 	ma5 = ma(accWorth,period=5,weights=[1,2,3,5,8])
+	# 	ma10 = ma(accWorth,period=10,weights=[1,2,3,5,8,13,21,34,55,89])
+	# except Exception as e:
+	# 	return -1
+	ema_fast = ema(accWorth,fast_param)
+	ema_slow = ema(accWorth,slow_param)
 	# plt.plot(accWorth,label='accWorth')
-	# plt.plot(ema5,label='EMA5')
-	# plt.plot(ema20,label='EMA20')
+	# plt.plot(ema_fast,label='EMA_FAST')
+	# plt.plot(ema_slow,label='EMA_SLOW')
 	# plt.legend()
 	# plt.show()
-	if (ema5[-2] <= ema20[-2]) and (ema5[-1] > ema20[-1]):
+	if (ema_fast[-2] <= ema_slow[-2]) and (ema_fast[-1] > ema_slow[-1]):
 		return 'Buy'
-	elif (ema5[-2] >= ema20[-2]) and (ema5[-1] < ema20[-1]):
+	elif (ema_fast[-2] >= ema_slow[-2]) and (ema_fast[-1] < ema_slow[-1]):
 		return 'Sell'
 	else:
 		return 'Hold'
 
 
-# test_date = datetime.date(2020,10,31)
-# getSignal('320007',test_date)
+# test_date = datetime.date(2021,6,10)
+# getSignal('320007',test_date,9,10)
 
 # plt.plot(accWorth,label='Acc Worth')
 # plt.plot(ma5,label='MA5')
