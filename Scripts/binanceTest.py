@@ -41,21 +41,22 @@ def calc_slope(data_list):
 
 
 columns = ['OpenTime','Open','High','Low','Close']
-EU_1h_12 = pd.read_csv('../Binance/ETHUSDT-1h-2020-12.csv').iloc[:,0:5]
-EU_1h_01 = pd.read_csv('../Binance/ETHUSDT-1h-2021-01.csv').iloc[:,0:5]
-EU_1h_02 = pd.read_csv('../Binance/ETHUSDT-1h-2021-02.csv').iloc[:,0:5]
-EU_1h_03 = pd.read_csv('../Binance/ETHUSDT-1h-2021-03.csv').iloc[:,0:5]
-EU_1h_04 = pd.read_csv('../Binance/ETHUSDT-1h-2021-04.csv').iloc[:,0:5]
-EU_1h_05 = pd.read_csv('../Binance/ETHUSDT-1h-2021-05.csv').iloc[:,0:5]
-EU_1h_12.columns = columns
-EU_1h_01.columns = columns
-EU_1h_02.columns = columns
-EU_1h_03.columns = columns
-EU_1h_04.columns = columns
-EU_1h_05.columns = columns
-EU_1h_6m = pd.concat([EU_1h_12,EU_1h_01,EU_1h_02,EU_1h_03,EU_1h_04,EU_1h_05],ignore_index=True)
-close_price = EU_1h_6m['Close'].values.tolist()
-open_price = EU_1h_6m['Open'].values.tolist()
+EU_15m_12 = pd.read_csv('../Binance/ETHUSDT-15m-2020-12.csv').iloc[:,0:5]
+EU_15m_01 = pd.read_csv('../Binance/ETHUSDT-15m-2021-01.csv').iloc[:,0:5]
+EU_15m_02 = pd.read_csv('../Binance/ETHUSDT-15m-2021-02.csv').iloc[:,0:5]
+EU_15m_03 = pd.read_csv('../Binance/ETHUSDT-15m-2021-03.csv').iloc[:,0:5]
+EU_15m_04 = pd.read_csv('../Binance/ETHUSDT-15m-2021-04.csv').iloc[:,0:5]
+EU_15m_05 = pd.read_csv('../Binance/ETHUSDT-15m-2021-05.csv').iloc[:,0:5]
+EU_15m_12.columns = columns
+EU_15m_01.columns = columns
+EU_15m_02.columns = columns
+EU_15m_03.columns = columns
+EU_15m_04.columns = columns
+EU_15m_05.columns = columns
+EU_15m_6m = pd.concat([EU_15m_12,EU_15m_01,EU_15m_02,EU_15m_03,EU_15m_04,EU_15m_05],ignore_index=True)
+close_price = EU_15m_6m['Close'].values.tolist()
+open_price = EU_15m_6m['Open'].values.tolist()
+close_price = close_price[2000:4000]
 
 
 
@@ -91,124 +92,148 @@ open_price = EU_1h_6m['Open'].values.tolist()
 # plt.show()
 
 
+class Backtester(object):
 
-def backtest(fast_param,slow_param,param_comb,trend_param):
-	balance = 100
-	totalBalance = [balance]    # 收益曲线
-	myShare = 0
-	state = 'sleeping'
-	win = 0    # 胜率统计
-	loss = 0    # 胜率统计
-	buy_points = []
-	sell_points = []    # 买卖点统计
-	for i in range(trend_param,len(close_price)):
-		ema_fast = ema(close_price[:i],fast_param)
-		ema_slow = ema(close_price[:i],slow_param)
-		ema_trend = ema(close_price[:i],trend_param)
-		ema_close = ema(close_price[:i],36)
-		if ema_fast[-1] > max(ema_slow[-1],ema_trend[-1]):
-			if (state == 'sleeping') and calc_slope(ema_trend[-5:]) > 0:
-				state = 'bought'
-				buy_price = close_price[i-1]    # 脚本每小时59分运行，粗略处理为以收盘价下单
-				myShare = balance/buy_price
-				totalBalance.append(balance)    # 收益曲线统计
-				balance = 0
-				print('做多: '+str(buy_price))
-				buy_points.append(i)
-			# elif (state == 'sold') and calc_slope(ema_trend[-5:]) > 0:
-			# 	state = 'bought'
-			# 	buy_price = close_price[i-1]
-			# 	profit = (sell_price-buy_price)*myShare
-			# 	balance = sell_price*myShare+profit
-			# 	myShare = balance/buy_price
-			# 	totalBalance.append(balance)    # 收益曲线统计
-			# 	balance = 0
-			# 	if profit > 0:    # 胜率统计
-			# 		win +=1
-			# 	else:
-			# 		loss += 1
-			# 	print('平空做多: '+str(buy_price)+'  Profit: '+str(profit))
-			# 	buy_points.append(i)
-			else:
-				pass
-		elif ema_fast[-1] < min(ema_slow[-1],ema_trend[-1]):
-			if (state == 'sleeping') and calc_slope(ema_trend[-5:]) < 0:
-				state = 'sold'
-				sell_price = close_price[i-1]
-				myShare = balance/sell_price
-				totalBalance.append(balance)    # 收益曲线统计
-				balance = 0
-				print('做空: '+str(sell_price))
-				sell_points.append(i)
-			# elif (state == 'bought') and calc_slope(ema_trend[-5:]) < 0:
-			# 	state = 'sold'
-			# 	sell_price = close_price[i-1]
-			# 	profit = (sell_price-buy_price)*myShare
-			# 	balance = buy_price*myShare+profit
-			# 	myShare = balance/sell_price
-			# 	totalBalance.append(balance)    # 收益曲线统计
-			# 	balance = 0
-			# 	if profit > 0:    # 胜率统计
-			# 		win +=1
-			# 	else:
-			# 		loss += 1
-			# 	print('平多做空: '+str(sell_price)+'  Profit: '+str(profit))
-			# 	sell_points.append(i)
-			else:
-				pass
-		elif (calc_slope(ema_close[-6:-1]) < 0) and (calc_slope(ema_close[-5:]) > 0) and (state == 'sold'):
-			state = 'sleeping'
-			buy_price = close_price[i-1]
-			profit = (sell_price-buy_price)*myShare
-			balance = sell_price*myShare+profit
-			totalBalance.append(balance)    # 收益曲线统计
-			myShare = 0
-			if profit > 0:    # 胜率统计
-				win +=1
-			else:
-				loss += 1
-			print('平空: '+str(buy_price)+'  profit: '+str(profit))
-			buy_points.append(i)
-		elif (calc_slope(ema_close[-6:-1]) > 0) and (calc_slope(ema_close[-5:]) < 0) and (state == 'bought'):
-			state = 'sleeping'
-			sell_price = close_price[i-1]
-			profit = (sell_price-buy_price)*myShare
-			balance = buy_price*myShare+profit
-			totalBalance.append(balance)    # 收益曲线统计
-			myShare = 0
-			if profit > 0:    # 胜率统计
-				win +=1
-			else:
-				loss += 1
-			print('平多: '+str(sell_price)+'  Profit: '+str(profit))
-			sell_points.append(i)
+	def __init__(self,test_param,fast_param,slow_param):
+		self.test_param = test_param
+		self.fast_param = fast_param
+		self.slow_param = slow_param
+		self.trend_param = 233
+		self.balance = 100
+		self.totalBalance = [self.balance]    # 收益曲线
+		self.myShare = 0
+		self.state = 'sleeping'
+		self.win = 0    # 胜率统计
+		self.loss = 0    # 胜率统计
+		self.buy_points = []
+		self.sell_points = []
+		self.close_points = []    # 买卖点统计
+
+	def buyLong(self,i):
+		self.state = 'bought'
+		self.buy_price = close_price[i-1]    # 脚本每小时59分运行，粗略处理为以收盘价下单
+		self.myShare = self.balance/self.buy_price
+		self.balance = 0
+		print('做多: '+str(self.buy_price))
+		self.buy_points.append(i)
+
+	def closeLong(self,i):
+		self.state = 'sleeping'
+		self.close_long_price = close_price[i-1]
+		profit = (self.close_long_price-self.buy_price)*self.myShare
+		self.balance = self.buy_price*self.myShare+profit
+		self.totalBalance.append(self.balance)    # 收益曲线统计
+		self.myShare = 0
+		if profit > 0:    # 胜率统计
+			self.win +=1
 		else:
-			pass
-	print('EMA'+str(fast_param)+'+EMA'+str(slow_param)+'+EMA'+str(trend_param)+': '+str(balance+myShare*close_price[-1])+'    平均交易间隔: '+str(6*30*24/len(totalBalance))+'    胜率: '+str(win/(win+loss)))
-	totalBalance.append(balance+myShare*close_price[-1])    # 收益曲线统计
-	# param_comb[int(str(fast_param)+str(slow_param))] = totalBalance[-1]    # 参数组合收益变化
-	param_comb[int(str(fast_param)+str(slow_param)+str(trend_param))] = win/(win+loss)    # 参数组合胜率变化
-	# plt.plot(totalBalance)
-	plt.plot(close_price)
-	plt.plot(ema(close_price,12),label='12')
-	plt.plot(ema(close_price,144),label='144')
-	plt.plot(ema(close_price,169),label='169')
-	plt.legend()
-	plt.vlines(buy_points,min(close_price),max(close_price),color='g')
-	plt.vlines(sell_points,min(close_price),max(close_price),color='r')
-	plt.show()
+			self.loss += 1
+		print('平多: '+str(self.close_long_price)+'  Profit: '+str(profit))
+		self.close_points.append(i)
+
+	def sellShort(self,i):
+		self.state = 'sold'
+		self.sell_price = close_price[i-1]
+		self.myShare = self.balance/self.sell_price
+		self.balance = 0
+		print('做空: '+str(self.sell_price))
+		self.sell_points.append(i)
+
+	def closeShort(self,i):
+		self.state = 'sleeping'
+		self.close_short_price = close_price[i-1]
+		profit = (self.sell_price-self.close_short_price)*self.myShare
+		self.balance = self.sell_price*self.myShare+profit
+		self.totalBalance.append(self.balance)    # 收益曲线统计
+		self.myShare = 0
+		if profit > 0:    # 胜率统计
+			self.win +=1
+		else:
+			self.loss += 1
+		print('平空: '+str(self.close_short_price)+'  profit: '+str(profit))
+		self.close_points.append(i)
+
+	def test(self):
+		for i in range(self.trend_param,len(close_price)):
+			ema_test = ema(close_price[:i],self.test_param)
+			ema_fast = ema(close_price[:i],self.fast_param)
+			ema_slow = ema(close_price[:i],self.slow_param)
+			ema_trend = ema(close_price[:i],self.trend_param)
+
+			# # 止损
+			# if (self.state == 'bought') and ((ema_test[-1]-self.buy_price)/self.buy_price <=-0.02):
+			# 	self.closeLong(i)
+			# elif (self.state == 'sold') and ((self.sell_price-ema_test[-1])/self.sell_price <= -0.02):
+			# 	self.closeShort(i)
+			# else:
+			# 	pass
+
+			# 建仓平仓
+			if ema_test[-1] > max(ema_fast[-1],ema_slow[-1]):
+				if (self.state == 'sleeping') and (calc_slope(ema_trend[-5:]) > 0):
+					self.buyLong(i)
+				elif (self.state == 'sold') and (calc_slope(ema_trend[-5:]) > 0):
+					self.closeShort(i)
+					self.buyLong(i)
+				elif self.state == 'sold':
+					self.closeShort(i)
+				else:
+					pass
+			elif ema_test[-1] < min(ema_fast[-1],ema_slow[-1]):
+				if (self.state == 'sleeping') and (calc_slope(ema_trend[-5:]) < 0):
+					self.sellShort(i)
+				elif (self.state == 'bought') and (calc_slope(ema_trend[-5:]) < 0):
+					self.closeLong(i)
+					self.sellShort(i)
+				elif self.state == 'bought':
+					self.closeLong(i)
+				else:
+					pass
+			else:
+				pass
+		print('EMA'+str(self.test_param)+'+EMA'+str(self.fast_param)+'+EMA'+str(self.slow_param)+': '+str(self.balance+self.myShare*close_price[-1])
+			+'    平均交易间隔: '+str(6*30*24/len(self.totalBalance))+'    胜率: '+str(self.win/(self.win+self.loss)))
+
+	def show_plot(self):
+		if self.state == 'bought':
+			profit = (close_price[-1]-self.buy_price)*self.myShare
+			self.balance = self.buy_price*self.myShare+profit
+			self.totalBalance.append(self.balance)    # 收益曲线统计
+		elif self.state == 'sold':
+			profit = (self.sell_price-close_price[-1])*self.myShare
+			self.balance = self.sell_price*self.myShare+profit
+			self.totalBalance.append(self.balance)    # 收益曲线统计
+		else:
+			pass    # 收益曲线统计
+		# param_comb[int(str(test_param)+str(fast_param)+str(slow_param))] = totalBalance[-1]    # 参数组合收益变化
+		# param_comb[int(str(self.fast_param)+str(self.slow_param)+str(self.trend_param))] = self.win/(self.win+self.loss)    # 参数组合胜率变化
+		# plt.plot(totalBalance)
+		plt.plot(close_price)
+		plt.plot(ema(close_price,self.test_param),label='TEST')
+		plt.plot(ema(close_price,self.fast_param),label='FAST')
+		plt.plot(ema(close_price,self.slow_param),label='SLOW')
+		plt.plot(ema(close_price,self.trend_param),label='TREND')
+		plt.legend()
+		plt.vlines(self.buy_points,min(close_price),max(close_price),color='g')    # 做多点
+		plt.vlines(self.sell_points,min(close_price),max(close_price),color='r')    # 做空点
+		plt.vlines(self.close_points,min(close_price),max(close_price),color='orange')    # 平仓点
+		plt.show()
+
+
+tester = Backtester(13,55,60)
+tester.test()
+tester.show_plot()
 
 
 
-# 寻找最佳参数组合
-
-# pool = multiprocessing.Pool(8)
+# # 寻找最佳参数组合
+# pool = multiprocessing.Pool(6)
 # manager = multiprocessing.Manager()
 # param_comb = manager.dict()
-# for fast_param in range(9,10):
-# 	for slow_param in range(55,56):
-# 		for trend_param in range(64,65):
-# 			pool.apply_async(backtest,(fast_param,slow_param,param_comb,trend_param,))
+# for test_param in range(9,10):
+# 	for fast_param in range(25,35):
+# 		for slow_param in range(fast_param+3,fast_param+13):
+# 			pool.apply_async(backtest,(test_param,fast_param,slow_param,param_comb,))
 
 # pool.close()
 # pool.join()
@@ -225,9 +250,6 @@ def backtest(fast_param,slow_param,param_comb,trend_param):
 # plt.show()
 
 
-
-
-
 # # 在线版本
 # def backtest(fast_param,slow_param,param_comb):
 # 	balance = 100
@@ -236,6 +258,8 @@ def backtest(fast_param,slow_param,param_comb,trend_param):
 # 	state = 'sleeping'
 # 	win = 0    # 胜率统计
 # 	loss = 0    # 胜率统计
+# 	buy_points = []
+# 	sell_points = []
 # 	for i in range(fast_param+slow_param,len(close_price)):
 # 		ema_fast = ema(close_price[:i],fast_param)
 # 		ema_slow = ema(close_price[:i],slow_param)
