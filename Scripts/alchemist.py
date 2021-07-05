@@ -114,7 +114,6 @@ def getSignal(fund_code,test_date=None,fast_param=5,slow_param=20):
 	df['Date'] = pd.to_datetime(df['Date'])
 	df = df.set_index('Date')
 	df = df[:test_date]
-	# df = df['2019':test_date]    # 为减少运算量，暂时取2019年以后的数据
 	accWorth = df['AccWorth'].values.tolist()
 	dailyChange = df['Change'].values.tolist()
 	# try:
@@ -124,6 +123,7 @@ def getSignal(fund_code,test_date=None,fast_param=5,slow_param=20):
 	# 	return -1
 	ema_fast = ema(accWorth,fast_param)
 	ema_slow = ema(accWorth,slow_param)
+	# print(ema_slow)
 	# plt.plot(accWorth,label='accWorth')
 	# plt.plot(ema_fast,label='EMA_FAST')
 	# plt.plot(ema_slow,label='EMA_SLOW')
@@ -135,10 +135,16 @@ def getSignal(fund_code,test_date=None,fast_param=5,slow_param=20):
 		return 'Sell'
 	else:
 		return 'Hold'
+	# if (ema_slow[-1]-ema_slow[-2]) >= 0.005:
+	# 	return 'Buy'
+	# elif (ema_slow[-1]-ema_slow[-2]) <= -0.005:
+	# 	return 'Sell'
+	# else:
+	# 	return 'Hold'
 
 
 # test_date = datetime.date(2021,6,10)
-# getSignal('320007',test_date,9,10)
+# getSignal('510300',test_date,8,18)
 
 # plt.plot(accWorth,label='Acc Worth')
 # plt.plot(ma5,label='MA5')
