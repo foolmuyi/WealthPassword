@@ -1,0 +1,125 @@
+# -*- coding:utf-8 -*-
+
+import json,time
+import requests
+import hmac,hashlib
+import numpy as np
+import smtplib
+from email.mime.text import MIMEText
+
+
+# This script runs every minute
+
+# tool function
+def param2string(param):
+    s=''
+    for k in param.keys():
+        s+=k
+        s+='='
+        s+=str(param[k])
+        s+='&'
+    return s[:-1]
+
+# hash signature
+def getSig(API_secret,query_string):
+	return hmac.new(API_secret.encode('utf-8'), query_string.encode('utf-8'), hashlib.sha256).hexdigest()
+
+# acquire k line data
+def getData():
+	kline_url = 'https://fapi.binance.com/fapi/v1/klines?symbol=ETHUSDT&interval=1m&limit=1500'
+	res = requests.get(kline_url)
+	raw_data = json.loads(res.text)
+	# open_price = [each[1] for each in raw_data]
+	close_price = [float(each[4]) for each in raw_data]
+	return close_price
+
+# acquire account data (position amount mainly)
+def getAccountInfo(API_key,API_secret):
+	info_url = 'https://fapi.binance.com/fapi/v2/account'
+	timestamp = int(time.time()*1000)
+	query_string = {'timestamp':timestamp}
+	query_string['signature'] = getSig(API_secret,param2string(query_string))
+	res = requests.get(url=info_url,headers={'X-MBX-APIKEY':API_key},params=query_string)
+	return res
+
+# acquire current open order
+def getOpenOrders(API_key,API_secret):
+	info_url = 'https://fapi.binance.com/fapi/v1/openOrders'
+	timestamp = int(time.time()*1000)
+	query_string = {'symbol':'ETHUSDT','timestamp':timestamp}
+	query_string['signature'] = getSig(API_secret,param2string(query_string))
+	res = requests.get(url=info_url,headers={'X-MBX-APIKEY':API_key},params=query_string)
+	return res
+
+# close current open order
+def closeOpenOrders(API_key,API_secret):
+	info_url = 'https://fapi.binance.com//fapi/v1/allOpenOrders'
+	timestamp = int(time.time()*1000)
+	query_string = {'symbol':'ETHUSDT','timestamp':timestamp}
+	query_string['signature'] = getSig(API_secret,param2string(query_string))
+	res = requests.delete(url=info_url,headers={'X-MBX-APIKEY':API_key},params=query_string)
+	return res
+
+# order as marker (open positions)
+def order_maker(API_key,API_secret,side,quantity):
+	order_url = 'https://fapi.binance.com/fapi/v1/order'
+	timestamp = int(time.time()*1000)
+	maker_price_raw = getMakerPrice(API_key,API_secret)
+	maker_price_info = json.loads(maker_price_raw.text)
+	if side == 'BUY':
+		maker_price = float(maker_price_info['bidPrice'])
+	elif side == 'SELL':
+		maker_price = float(maker_price_info['askPrice'])
+	query_string = {'symbol':'ETHUSDT','side':side,'type':'LIMIT','quantity':quantity,'price':maker_price,'timeInForce':'GTX','timestamp':timestamp}
+	query_string['signature'] = getSig(API_secret,param2string(query_string))
+	res = requests.post(url=order_url,headers={'X-MBX-APIKEY':API_key},data=query_string)
+	return res
+
+# send email to me when error occures
+def sendMail(mail_content,subject='Error Occurred!'):
+	mail_host = 'smtp.163.com'
+	mail_username = 'example@163.com'
+	mail_pw = 'passwordexample'
+	mail_recv = ['example@xxx.com']
+	message = MIMEText(mail_content,'plain','utf-8')
+	message['Subject'] = subject
+	message['From'] = 'example@163.com'
+	message['To'] = mail_recv[0]
+	smtpObj = smtplib.SMTP_SSL(mail_host,465)
+	smtpObj.login(mail_username,mail_pw)
+	smtpObj.sendmail(mail_username,mail_recv[0],message.as_string())
+	smtpObj.quit()
+
+# main function
+def main():
+	API_key = 'APIKEYEXAMPLE'
+	API_secret = 'APISECRETEXAMPLE'
+	quantity = 0.03
+	account_info_res = getAccountInfo(API_key,API_secret)
+	account_info = json.loads(account_info_res.text)
+	ETHUSDT_info = [each for each in account_info['positions'] if each['symbol'] == 'ETHUSDT'][-1]
+	positionAmt = float(ETHUSDT_info['positionAmt'])    # current position
+	entry_price = float(ETHUSDT_info['entryPrice'])
+	close_price = getData()
+
+	# close open orders
+	open_orders = json.loads(getOpenOrders(API_key,API_secret).text)
+	if open_orders != []:
+		closeOpenOrders(API_key,API_secret)
+	else:
+		pass
+
+	# take profit
+	if (positionAmt > 0) and ((close_price[-1]-entry_price)/entry_price > 0.02):
+			order_maker(API_key,API_secret,'SELL',quantity)
+	elif (positionAmt < 0) and ((close_price[-1]-entry_price)/entry_price < -0.02):
+			order_maker(API_key,API_secret,'BUY',quantity)
+	else:
+		pass
+
+
+if __name__ == "__main__":
+	try:
+		main()
+	except Exception as e:
+		sendMail(str(e))

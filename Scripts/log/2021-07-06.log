@@ -1,0 +1,558 @@
+2021-07-06 15:23:00,866:ERROR:Page not found: 000012
+2021-07-06 15:23:00,912:ERROR:Page not found: 000002
+2021-07-06 15:23:02,412:ERROR:Page not found: 000154
+2021-07-06 15:23:02,937:ERROR:No accumulated worth trend data found: 000076
+2021-07-06 15:23:03,303:ERROR:Page not found: 000155
+2021-07-06 15:23:03,890:ERROR:Page not found: 000158
+2021-07-06 15:23:03,973:ERROR:Page not found: 000157
+2021-07-06 15:23:04,079:ERROR:Page not found: 000161
+2021-07-06 15:23:04,079:ERROR:Page not found: 000162
+2021-07-06 15:23:04,080:ERROR:Page not found: 000159
+2021-07-06 15:23:04,240:ERROR:Page not found: 000164
+2021-07-06 15:23:28,727:ERROR:Page not found: 000459
+2021-07-06 15:23:28,770:ERROR:Page not found: 000514
+2021-07-06 15:23:28,822:ERROR:Page not found: 000472
+2021-07-06 15:23:33,056:ERROR:Page not found: 000635
+2021-07-06 15:24:02,396:ERROR:Page not found: 000718
+2021-07-06 15:24:02,477:ERROR:Page not found: 000731
+2021-07-06 15:24:03,150:ERROR:Page not found: 000795
+2021-07-06 15:24:04,606:ERROR:Page not found: 000842
+2021-07-06 15:25:57,336:ERROR:Page not found: 000002
+2021-07-06 15:25:57,510:ERROR:Page not found: 000012
+2021-07-06 15:25:57,537:ERROR:No accumulated worth trend data found: 000076
+2021-07-06 15:25:58,806:ERROR:Page not found: 000157
+2021-07-06 15:25:59,306:ERROR:Page not found: 000158
+2021-07-06 15:25:59,708:ERROR:Page not found: 000159
+2021-07-06 15:25:59,766:ERROR:Page not found: 000154
+2021-07-06 15:25:59,788:ERROR:Page not found: 000161
+2021-07-06 15:25:59,809:ERROR:Page not found: 000155
+2021-07-06 15:25:59,912:ERROR:Page not found: 000164
+2021-07-06 15:25:59,949:ERROR:Page not found: 000162
+2021-07-06 15:26:41,153:ERROR:Page not found: 000459
+2021-07-06 15:26:44,337:ERROR:Page not found: 000514
+2021-07-06 15:26:44,506:ERROR:Page not found: 000472
+2021-07-06 15:27:22,101:ERROR:Page not found: 000635
+2021-07-06 15:27:42,331:ERROR:Page not found: 000731
+2021-07-06 15:27:42,378:ERROR:Page not found: 000718
+2021-07-06 15:27:43,094:ERROR:Page not found: 000795
+2021-07-06 15:27:44,053:ERROR:Page not found: 000842
+2021-07-06 15:28:47,254:ERROR:No accumulated worth trend data found: 001066
+2021-07-06 15:32:15,019:ERROR:Page not found: 001153
+2021-07-06 15:32:15,042:ERROR:Page not found: 001151
+2021-07-06 15:32:16,198:ERROR:Page not found: 001187
+2021-07-06 15:34:03,311:ERROR:Page not found: 001472
+2021-07-06 15:35:06,716:ERROR:Page not found: 001831
+2021-07-06 15:35:30,568:ERROR:Page not found: 001853
+2021-07-06 15:35:32,029:ERROR:Server error, wait 5 seconds: 001990
+2021-07-06 15:35:33,609:ERROR:Page not found: 002002
+2021-07-06 15:35:33,661:ERROR:Page not found: 002012
+2021-07-06 15:35:37,032:ERROR:Server error, wait 5 seconds: 001990
+2021-07-06 15:35:53,660:ERROR:Page not found: 002050
+2021-07-06 15:36:26,046:ERROR:Page not found: 002253
+2021-07-06 15:48:43,912:ERROR:Page not found: 002606
+2021-07-06 15:49:02,590:ERROR:Page not found: 002613
+2021-07-06 15:49:12,532:ERROR:Page not found: 002956
+2021-07-06 15:49:21,182:ERROR:No accumulated worth trend data found: 003245
+2021-07-06 15:49:21,353:ERROR:No accumulated worth trend data found: 003244
+2021-07-06 15:50:57,317:ERROR:Server error, wait 5 seconds: 005064
+2021-07-06 15:50:57,352:ERROR:Server error, wait 5 seconds: 005081
+2021-07-06 15:51:02,318:ERROR:Server error, wait 5 seconds: 005064
+2021-07-06 15:51:02,352:ERROR:Server error, wait 5 seconds: 005081
+2021-07-06 15:51:11,405:ERROR:Page not found: 005190
+2021-07-06 15:51:50,252:ERROR:No accumulated worth trend data found: 006050
+2021-07-06 15:51:52,643:ERROR:No accumulated worth trend data found: 006175
+2021-07-06 15:51:52,886:ERROR:No accumulated worth trend data found: 006176
+2021-07-06 15:51:53,414:ERROR:Server error, wait 5 seconds: 006266
+2021-07-06 15:51:53,414:ERROR:Server error, wait 5 seconds: 006265
+2021-07-06 15:51:53,423:ERROR:Server error, wait 5 seconds: 006253
+2021-07-06 15:51:53,423:ERROR:Server error, wait 5 seconds: 006250
+2021-07-06 15:51:53,467:ERROR:Server error, wait 5 seconds: 006251
+2021-07-06 15:51:58,416:ERROR:Server error, wait 5 seconds: 006266
+2021-07-06 15:51:58,417:ERROR:Server error, wait 5 seconds: 006265
+2021-07-06 15:51:58,423:ERROR:Server error, wait 5 seconds: 006253
+2021-07-06 15:51:58,424:ERROR:Server error, wait 5 seconds: 006250
+2021-07-06 15:51:58,469:ERROR:Server error, wait 5 seconds: 006251
+2021-07-06 15:52:07,177:ERROR:Page not found: 006313
+2021-07-06 15:52:09,119:ERROR:No accumulated worth trend data found: 006400
+2021-07-06 15:52:31,658:ERROR:Page not found: 007498
+2021-07-06 15:52:39,197:ERROR:No accumulated worth trend data found: 007861
+2021-07-06 15:52:39,207:ERROR:No accumulated worth trend data found: 007862
+2021-07-06 15:52:52,623:ERROR:No accumulated worth trend data found: 008715
+2021-07-06 15:53:03,430:ERROR:No accumulated worth trend data found: 009563
+2021-07-06 15:53:12,529:ERROR:No accumulated worth trend data found: 010443
+2021-07-06 15:53:16,491:ERROR:No accumulated worth trend data found: 010705
+2021-07-06 15:53:16,814:ERROR:No accumulated worth trend data found: 010716
+2021-07-06 15:53:16,841:ERROR:No accumulated worth trend data found: 010721
+2021-07-06 15:53:16,855:ERROR:No accumulated worth trend data found: 010720
+2021-07-06 15:53:16,857:ERROR:No accumulated worth trend data found: 010715
+2021-07-06 15:53:17,246:ERROR:No accumulated worth trend data found: 010773
+2021-07-06 15:53:17,372:ERROR:No accumulated worth trend data found: 010774
+2021-07-06 15:53:18,237:ERROR:No accumulated worth trend data found: 010852
+2021-07-06 15:53:18,370:ERROR:No accumulated worth trend data found: 010822
+2021-07-06 15:53:18,403:ERROR:No accumulated worth trend data found: 010851
+2021-07-06 15:53:18,422:ERROR:No accumulated worth trend data found: 010850
+2021-07-06 15:53:18,480:ERROR:No accumulated worth trend data found: 010823
+2021-07-06 15:53:18,531:ERROR:No accumulated worth trend data found: 010857
+2021-07-06 15:53:18,539:ERROR:No accumulated worth trend data found: 010858
+2021-07-06 15:53:18,565:ERROR:No accumulated worth trend data found: 010862
+2021-07-06 15:53:18,566:ERROR:No accumulated worth trend data found: 010853
+2021-07-06 15:53:18,767:ERROR:No accumulated worth trend data found: 010876
+2021-07-06 15:53:18,777:ERROR:No accumulated worth trend data found: 010877
+2021-07-06 15:53:21,268:ERROR:No accumulated worth trend data found: 010931
+2021-07-06 15:53:21,332:ERROR:No accumulated worth trend data found: 010943
+2021-07-06 15:53:21,416:ERROR:No accumulated worth trend data found: 010932
+2021-07-06 15:53:21,474:ERROR:No accumulated worth trend data found: 010942
+2021-07-06 15:53:21,645:ERROR:Server error, wait 5 seconds: 011021
+2021-07-06 15:53:21,798:ERROR:Server error, wait 5 seconds: 011028
+2021-07-06 15:53:26,650:ERROR:Server error, wait 5 seconds: 011021
+2021-07-06 15:53:26,799:ERROR:Server error, wait 5 seconds: 011028
+2021-07-06 15:53:34,420:ERROR:No accumulated worth trend data found: 011048
+2021-07-06 15:53:34,461:ERROR:No accumulated worth trend data found: 011037
+2021-07-06 15:53:34,514:ERROR:No accumulated worth trend data found: 011049
+2021-07-06 15:53:34,631:ERROR:No accumulated worth trend data found: 011050
+2021-07-06 15:53:34,667:ERROR:No accumulated worth trend data found: 011051
+2021-07-06 15:53:35,484:ERROR:No accumulated worth trend data found: 011107
+2021-07-06 15:53:36,476:ERROR:No accumulated worth trend data found: 011108
+2021-07-06 15:53:37,351:ERROR:No accumulated worth trend data found: 011192
+2021-07-06 15:53:37,645:ERROR:No accumulated worth trend data found: 011193
+2021-07-06 15:53:37,721:ERROR:No accumulated worth trend data found: 011225
+2021-07-06 15:53:38,086:ERROR:No accumulated worth trend data found: 011224
+2021-07-06 15:53:38,126:ERROR:No accumulated worth trend data found: 011215
+2021-07-06 15:53:38,212:ERROR:No accumulated worth trend data found: 011214
+2021-07-06 15:53:38,780:ERROR:No accumulated worth trend data found: 011250
+2021-07-06 15:53:38,784:ERROR:No accumulated worth trend data found: 011264
+2021-07-06 15:53:38,792:ERROR:No accumulated worth trend data found: 011268
+2021-07-06 15:53:38,795:ERROR:No accumulated worth trend data found: 011249
+2021-07-06 15:53:39,054:ERROR:No accumulated worth trend data found: 011267
+2021-07-06 15:53:39,154:ERROR:No accumulated worth trend data found: 011270
+2021-07-06 15:53:39,156:ERROR:No accumulated worth trend data found: 011269
+2021-07-06 15:53:39,796:ERROR:No accumulated worth trend data found: 011313
+2021-07-06 15:53:40,118:ERROR:No accumulated worth trend data found: 011330
+2021-07-06 15:53:40,172:ERROR:No accumulated worth trend data found: 011343
+2021-07-06 15:53:40,180:ERROR:No accumulated worth trend data found: 011345
+2021-07-06 15:53:40,193:ERROR:No accumulated worth trend data found: 011344
+2021-07-06 15:53:40,254:ERROR:No accumulated worth trend data found: 011342
+2021-07-06 15:53:40,355:ERROR:No accumulated worth trend data found: 011365
+2021-07-06 15:53:40,357:ERROR:No accumulated worth trend data found: 011361
+2021-07-06 15:53:40,363:ERROR:No accumulated worth trend data found: 011360
+2021-07-06 15:53:40,375:ERROR:No accumulated worth trend data found: 011362
+2021-07-06 15:53:40,389:ERROR:No accumulated worth trend data found: 011359
+2021-07-06 15:53:40,463:ERROR:No accumulated worth trend data found: 011375
+2021-07-06 15:53:40,472:ERROR:No accumulated worth trend data found: 011376
+2021-07-06 15:53:40,480:ERROR:No accumulated worth trend data found: 011366
+2021-07-06 15:53:40,481:ERROR:No accumulated worth trend data found: 011379
+2021-07-06 15:53:40,482:ERROR:No accumulated worth trend data found: 011380
+2021-07-06 15:53:41,181:ERROR:No accumulated worth trend data found: 011390
+2021-07-06 15:53:41,319:ERROR:No accumulated worth trend data found: 011404
+2021-07-06 15:53:41,392:ERROR:No accumulated worth trend data found: 011403
+2021-07-06 15:53:41,445:ERROR:No accumulated worth trend data found: 011441
+2021-07-06 15:53:41,601:ERROR:No accumulated worth trend data found: 011440
+2021-07-06 15:53:41,638:ERROR:No accumulated worth trend data found: 011456
+2021-07-06 15:53:41,704:ERROR:No accumulated worth trend data found: 011455
+2021-07-06 15:53:43,386:ERROR:No accumulated worth trend data found: 011572
+2021-07-06 15:53:43,846:ERROR:No accumulated worth trend data found: 011582
+2021-07-06 15:53:43,855:ERROR:No accumulated worth trend data found: 011581
+2021-07-06 15:53:43,931:ERROR:No accumulated worth trend data found: 011577
+2021-07-06 15:53:43,955:ERROR:No accumulated worth trend data found: 011576
+2021-07-06 15:53:44,363:ERROR:No accumulated worth trend data found: 011590
+2021-07-06 15:53:44,425:ERROR:No accumulated worth trend data found: 011606
+2021-07-06 15:53:44,439:ERROR:No accumulated worth trend data found: 011591
+2021-07-06 15:53:44,441:ERROR:No accumulated worth trend data found: 011589
+2021-07-06 15:53:44,495:ERROR:No accumulated worth trend data found: 011605
+2021-07-06 15:53:44,510:ERROR:No accumulated worth trend data found: 011573
+2021-07-06 15:53:45,150:ERROR:No accumulated worth trend data found: 011643
+2021-07-06 15:53:45,757:ERROR:No accumulated worth trend data found: 011665
+2021-07-06 15:53:45,763:ERROR:No accumulated worth trend data found: 011644
+2021-07-06 15:53:45,867:ERROR:No accumulated worth trend data found: 011666
+2021-07-06 15:53:45,920:ERROR:No accumulated worth trend data found: 011681
+2021-07-06 15:53:45,924:ERROR:No accumulated worth trend data found: 011692
+2021-07-06 15:53:45,980:ERROR:No accumulated worth trend data found: 011677
+2021-07-06 15:53:45,993:ERROR:No accumulated worth trend data found: 011678
+2021-07-06 15:53:46,015:ERROR:No accumulated worth trend data found: 011693
+2021-07-06 15:53:46,048:ERROR:No accumulated worth trend data found: 011703
+2021-07-06 15:53:46,240:ERROR:No accumulated worth trend data found: 011682
+2021-07-06 15:53:46,257:ERROR:No accumulated worth trend data found: 011704
+2021-07-06 15:53:46,271:ERROR:No accumulated worth trend data found: 011705
+2021-07-06 15:53:46,707:ERROR:No accumulated worth trend data found: 011737
+2021-07-06 15:53:46,753:ERROR:No accumulated worth trend data found: 011735
+2021-07-06 15:53:46,953:ERROR:No accumulated worth trend data found: 011725
+2021-07-06 15:53:46,962:ERROR:No accumulated worth trend data found: 011736
+2021-07-06 15:53:46,989:ERROR:No accumulated worth trend data found: 011734
+2021-07-06 15:53:47,106:ERROR:No accumulated worth trend data found: 011756
+2021-07-06 15:53:47,364:ERROR:No accumulated worth trend data found: 011757
+2021-07-06 15:53:48,063:ERROR:No accumulated worth trend data found: 011792
+2021-07-06 15:53:48,154:ERROR:No accumulated worth trend data found: 011791
+2021-07-06 15:53:48,517:ERROR:No accumulated worth trend data found: 011822
+2021-07-06 15:53:48,552:ERROR:No accumulated worth trend data found: 011847
+2021-07-06 15:53:48,554:ERROR:No accumulated worth trend data found: 011834
+2021-07-06 15:53:48,556:ERROR:No accumulated worth trend data found: 011823
+2021-07-06 15:53:48,558:ERROR:No accumulated worth trend data found: 011848
+2021-07-06 15:53:48,566:ERROR:No accumulated worth trend data found: 011828
+2021-07-06 15:53:48,578:ERROR:No accumulated worth trend data found: 011829
+2021-07-06 15:53:48,609:ERROR:No accumulated worth trend data found: 011835
+2021-07-06 15:53:48,611:ERROR:No accumulated worth trend data found: 011816
+2021-07-06 15:53:48,714:ERROR:No accumulated worth trend data found: 011882
+2021-07-06 15:53:49,027:ERROR:No accumulated worth trend data found: 011885
+2021-07-06 15:53:49,030:ERROR:No accumulated worth trend data found: 011883
+2021-07-06 15:53:49,039:ERROR:No accumulated worth trend data found: 011884
+2021-07-06 15:53:49,237:ERROR:Server error, wait 5 seconds: 011966
+2021-07-06 15:53:49,237:ERROR:Server error, wait 5 seconds: 011987
+2021-07-06 15:53:49,237:ERROR:Server error, wait 5 seconds: 011971
+2021-07-06 15:53:49,237:ERROR:Server error, wait 5 seconds: 011982
+2021-07-06 15:53:49,238:ERROR:Server error, wait 5 seconds: 011989
+2021-07-06 15:53:49,241:ERROR:Server error, wait 5 seconds: 011991
+2021-07-06 15:53:49,242:ERROR:Server error, wait 5 seconds: 011988
+2021-07-06 15:53:49,242:ERROR:Server error, wait 5 seconds: 011967
+2021-07-06 15:53:49,268:ERROR:No accumulated worth trend data found: 011956
+2021-07-06 15:53:49,278:ERROR:No accumulated worth trend data found: 011990
+2021-07-06 15:53:49,304:ERROR:No accumulated worth trend data found: 011957
+2021-07-06 15:53:54,239:ERROR:Server error, wait 5 seconds: 011966
+2021-07-06 15:53:54,239:ERROR:Server error, wait 5 seconds: 011987
+2021-07-06 15:53:54,257:ERROR:Server error, wait 5 seconds: 011971
+2021-07-06 15:53:54,257:ERROR:Server error, wait 5 seconds: 011982
+2021-07-06 15:53:54,257:ERROR:Server error, wait 5 seconds: 011989
+2021-07-06 15:53:54,258:ERROR:Server error, wait 5 seconds: 011991
+2021-07-06 15:53:54,258:ERROR:Server error, wait 5 seconds: 011988
+2021-07-06 15:53:54,258:ERROR:Server error, wait 5 seconds: 011967
+2021-07-06 15:54:02,120:ERROR:No accumulated worth trend data found: 011989
+2021-07-06 15:54:03,135:ERROR:No accumulated worth trend data found: 012015
+2021-07-06 15:54:03,144:ERROR:No accumulated worth trend data found: 012014
+2021-07-06 15:54:03,192:ERROR:No accumulated worth trend data found: 012024
+2021-07-06 15:54:03,228:ERROR:No accumulated worth trend data found: 012023
+2021-07-06 15:54:03,276:ERROR:No accumulated worth trend data found: 012058
+2021-07-06 15:54:03,279:ERROR:No accumulated worth trend data found: 012096
+2021-07-06 15:54:03,296:ERROR:No accumulated worth trend data found: 012106
+2021-07-06 15:54:03,313:ERROR:No accumulated worth trend data found: 012098
+2021-07-06 15:54:03,323:ERROR:No accumulated worth trend data found: 012097
+2021-07-06 15:54:03,337:ERROR:No accumulated worth trend data found: 012057
+2021-07-06 15:54:03,440:ERROR:No accumulated worth trend data found: 012144
+2021-07-06 15:54:03,442:ERROR:No accumulated worth trend data found: 012141
+2021-07-06 15:54:03,446:ERROR:No accumulated worth trend data found: 012143
+2021-07-06 15:54:03,465:ERROR:No accumulated worth trend data found: 012142
+2021-07-06 15:54:03,611:ERROR:No accumulated worth trend data found: 012156
+2021-07-06 15:54:03,620:ERROR:No accumulated worth trend data found: 012155
+2021-07-06 15:54:03,624:ERROR:No accumulated worth trend data found: 012171
+2021-07-06 15:54:03,626:ERROR:No accumulated worth trend data found: 012175
+2021-07-06 15:54:03,627:ERROR:No accumulated worth trend data found: 012176
+2021-07-06 15:54:03,640:ERROR:No accumulated worth trend data found: 012170
+2021-07-06 15:54:03,646:ERROR:Server error, wait 5 seconds: 012185
+2021-07-06 15:54:03,647:ERROR:Server error, wait 5 seconds: 012219
+2021-07-06 15:54:03,648:ERROR:Server error, wait 5 seconds: 012208
+2021-07-06 15:54:03,649:ERROR:Server error, wait 5 seconds: 012210
+2021-07-06 15:54:03,662:ERROR:No accumulated worth trend data found: 012216
+2021-07-06 15:54:03,672:ERROR:No accumulated worth trend data found: 012217
+2021-07-06 15:54:03,726:ERROR:Server error, wait 5 seconds: 012220
+2021-07-06 15:54:03,727:ERROR:Server error, wait 5 seconds: 012225
+2021-07-06 15:54:08,652:ERROR:Server error, wait 5 seconds: 012185
+2021-07-06 15:54:08,652:ERROR:Server error, wait 5 seconds: 012219
+2021-07-06 15:54:08,652:ERROR:Server error, wait 5 seconds: 012208
+2021-07-06 15:54:08,652:ERROR:Server error, wait 5 seconds: 012210
+2021-07-06 15:54:08,727:ERROR:Server error, wait 5 seconds: 012220
+2021-07-06 15:54:08,729:ERROR:Server error, wait 5 seconds: 012225
+2021-07-06 15:54:17,420:ERROR:No accumulated worth trend data found: 012239
+2021-07-06 15:54:17,426:ERROR:No accumulated worth trend data found: 012227
+2021-07-06 15:54:17,439:ERROR:No accumulated worth trend data found: 012253
+2021-07-06 15:54:17,447:ERROR:No accumulated worth trend data found: 012268
+2021-07-06 15:54:17,451:ERROR:No accumulated worth trend data found: 012228
+2021-07-06 15:54:17,460:ERROR:No accumulated worth trend data found: 012275
+2021-07-06 15:54:17,461:ERROR:No accumulated worth trend data found: 012254
+2021-07-06 15:54:17,463:ERROR:No accumulated worth trend data found: 012269
+2021-07-06 15:54:17,468:ERROR:No accumulated worth trend data found: 012261
+2021-07-06 15:54:17,503:ERROR:No accumulated worth trend data found: 012283
+2021-07-06 15:54:17,512:ERROR:No accumulated worth trend data found: 012276
+2021-07-06 15:54:17,528:ERROR:No accumulated worth trend data found: 012284
+2021-07-06 15:54:17,534:ERROR:No accumulated worth trend data found: 012252
+2021-07-06 15:54:17,584:ERROR:No accumulated worth trend data found: 012333
+2021-07-06 15:54:17,585:ERROR:No accumulated worth trend data found: 012349
+2021-07-06 15:54:17,594:ERROR:No accumulated worth trend data found: 012348
+2021-07-06 15:54:17,594:ERROR:No accumulated worth trend data found: 012332
+2021-07-06 15:54:17,595:ERROR:No accumulated worth trend data found: 012314
+2021-07-06 15:54:17,600:ERROR:No accumulated worth trend data found: 012359
+2021-07-06 15:54:17,602:ERROR:No accumulated worth trend data found: 012260
+2021-07-06 15:54:17,603:ERROR:No accumulated worth trend data found: 012358
+2021-07-06 15:54:17,639:ERROR:No accumulated worth trend data found: 012367
+2021-07-06 15:54:17,642:ERROR:No accumulated worth trend data found: 012364
+2021-07-06 15:54:17,644:ERROR:No accumulated worth trend data found: 012366
+2021-07-06 15:54:17,658:ERROR:No accumulated worth trend data found: 012387
+2021-07-06 15:54:17,659:ERROR:No accumulated worth trend data found: 012388
+2021-07-06 15:54:17,662:ERROR:No accumulated worth trend data found: 012365
+2021-07-06 15:54:17,663:ERROR:No accumulated worth trend data found: 012386
+2021-07-06 15:54:17,664:ERROR:No accumulated worth trend data found: 012368
+2021-07-06 15:54:17,669:ERROR:No accumulated worth trend data found: 012370
+2021-07-06 15:54:17,676:ERROR:No accumulated worth trend data found: 012369
+2021-07-06 15:54:17,735:ERROR:Server error, wait 5 seconds: 012426
+2021-07-06 15:54:17,738:ERROR:Server error, wait 5 seconds: 012461
+2021-07-06 15:54:17,740:ERROR:Server error, wait 5 seconds: 012429
+2021-07-06 15:54:17,741:ERROR:Server error, wait 5 seconds: 012415
+2021-07-06 15:54:17,741:ERROR:Server error, wait 5 seconds: 012475
+2021-07-06 15:54:17,742:ERROR:Server error, wait 5 seconds: 012449
+2021-07-06 15:54:17,787:ERROR:No accumulated worth trend data found: 012412
+2021-07-06 15:54:17,797:ERROR:No accumulated worth trend data found: 012409
+2021-07-06 15:54:17,799:ERROR:No accumulated worth trend data found: 012447
+2021-07-06 15:54:17,800:ERROR:No accumulated worth trend data found: 012434
+2021-07-06 15:54:17,803:ERROR:No accumulated worth trend data found: 012448
+2021-07-06 15:54:17,804:ERROR:No accumulated worth trend data found: 012464
+2021-07-06 15:54:17,813:ERROR:No accumulated worth trend data found: 012463
+2021-07-06 15:54:17,815:ERROR:No accumulated worth trend data found: 012483
+2021-07-06 15:54:17,816:ERROR:No accumulated worth trend data found: 012438
+2021-07-06 15:54:17,817:ERROR:No accumulated worth trend data found: 012430
+2021-07-06 15:54:17,819:ERROR:No accumulated worth trend data found: 012484
+2021-07-06 15:54:17,821:ERROR:No accumulated worth trend data found: 012474
+2021-07-06 15:54:17,822:ERROR:No accumulated worth trend data found: 012458
+2021-07-06 15:54:17,827:ERROR:No accumulated worth trend data found: 012476
+2021-07-06 15:54:17,831:ERROR:No accumulated worth trend data found: 012437
+2021-07-06 15:54:17,833:ERROR:No accumulated worth trend data found: 012408
+2021-07-06 15:54:17,834:ERROR:No accumulated worth trend data found: 012473
+2021-07-06 15:54:17,835:ERROR:No accumulated worth trend data found: 012416
+2021-07-06 15:54:17,835:ERROR:Server error, wait 5 seconds: 012488
+2021-07-06 15:54:17,835:ERROR:Server error, wait 5 seconds: 012491
+2021-07-06 15:54:17,866:ERROR:No accumulated worth trend data found: 012492
+2021-07-06 15:54:17,868:ERROR:No accumulated worth trend data found: 012487
+2021-07-06 15:54:22,741:ERROR:Server error, wait 5 seconds: 012426
+2021-07-06 15:54:22,741:ERROR:Server error, wait 5 seconds: 012461
+2021-07-06 15:54:22,741:ERROR:Server error, wait 5 seconds: 012429
+2021-07-06 15:54:22,742:ERROR:Server error, wait 5 seconds: 012415
+2021-07-06 15:54:22,742:ERROR:Server error, wait 5 seconds: 012475
+2021-07-06 15:54:22,742:ERROR:Server error, wait 5 seconds: 012449
+2021-07-06 15:54:22,836:ERROR:Server error, wait 5 seconds: 012488
+2021-07-06 15:54:22,836:ERROR:Server error, wait 5 seconds: 012491
+2021-07-06 15:54:29,243:ERROR:No accumulated worth trend data found: 012491
+2021-07-06 15:54:30,248:ERROR:No accumulated worth trend data found: 012415
+2021-07-06 15:54:30,570:ERROR:No accumulated worth trend data found: 012488
+2021-07-06 15:54:30,572:ERROR:No accumulated worth trend data found: 012475
+2021-07-06 15:54:30,822:ERROR:No accumulated worth trend data found: 012514
+2021-07-06 15:54:30,827:ERROR:No accumulated worth trend data found: 012510
+2021-07-06 15:54:30,835:ERROR:No accumulated worth trend data found: 012507
+2021-07-06 15:54:30,842:ERROR:No accumulated worth trend data found: 012498
+2021-07-06 15:54:30,846:ERROR:No accumulated worth trend data found: 012500
+2021-07-06 15:54:30,850:ERROR:No accumulated worth trend data found: 012506
+2021-07-06 15:54:30,854:ERROR:No accumulated worth trend data found: 012548
+2021-07-06 15:54:30,865:ERROR:No accumulated worth trend data found: 012499
+2021-07-06 15:54:30,891:ERROR:No accumulated worth trend data found: 012542
+2021-07-06 15:54:30,895:ERROR:No accumulated worth trend data found: 012534
+2021-07-06 15:54:30,898:ERROR:No accumulated worth trend data found: 012550
+2021-07-06 15:54:30,910:ERROR:No accumulated worth trend data found: 012549
+2021-07-06 15:54:30,911:ERROR:No accumulated worth trend data found: 012533
+2021-07-06 15:54:30,916:ERROR:No accumulated worth trend data found: 012583
+2021-07-06 15:54:30,916:ERROR:No accumulated worth trend data found: 012584
+2021-07-06 15:54:30,918:ERROR:No accumulated worth trend data found: 012541
+2021-07-06 15:54:30,919:ERROR:No accumulated worth trend data found: 012551
+2021-07-06 15:54:30,923:ERROR:No accumulated worth trend data found: 012553
+2021-07-06 15:54:30,924:ERROR:No accumulated worth trend data found: 012582
+2021-07-06 15:54:30,924:ERROR:Server error, wait 5 seconds: 012613
+2021-07-06 15:54:30,925:ERROR:No accumulated worth trend data found: 012568
+2021-07-06 15:54:30,925:ERROR:No accumulated worth trend data found: 012589
+2021-07-06 15:54:30,929:ERROR:No accumulated worth trend data found: 012597
+2021-07-06 15:54:30,929:ERROR:No accumulated worth trend data found: 012569
+2021-07-06 15:54:30,930:ERROR:No accumulated worth trend data found: 012552
+2021-07-06 15:54:30,930:ERROR:No accumulated worth trend data found: 012596
+2021-07-06 15:54:30,931:ERROR:No accumulated worth trend data found: 012605
+2021-07-06 15:54:30,938:ERROR:No accumulated worth trend data found: 012588
+2021-07-06 15:54:30,950:ERROR:Server error, wait 5 seconds: 012615
+2021-07-06 15:54:31,014:ERROR:No accumulated worth trend data found: 012641
+2021-07-06 15:54:31,015:ERROR:No accumulated worth trend data found: 012640
+2021-07-06 15:54:31,021:ERROR:No accumulated worth trend data found: 012501
+2021-07-06 15:54:31,035:ERROR:No accumulated worth trend data found: 012610
+2021-07-06 15:54:31,062:ERROR:Server error, wait 5 seconds: 012662
+2021-07-06 15:54:31,062:ERROR:Server error, wait 5 seconds: 012661
+2021-07-06 15:54:31,066:ERROR:Server error, wait 5 seconds: 012687
+2021-07-06 15:54:31,067:ERROR:No accumulated worth trend data found: 012609
+2021-07-06 15:54:31,073:ERROR:No accumulated worth trend data found: 012511
+2021-07-06 15:54:31,074:ERROR:No accumulated worth trend data found: 012606
+2021-07-06 15:54:31,074:ERROR:No accumulated worth trend data found: 012614
+2021-07-06 15:54:31,076:ERROR:No accumulated worth trend data found: 012672
+2021-07-06 15:54:31,084:ERROR:No accumulated worth trend data found: 012688
+2021-07-06 15:54:31,085:ERROR:No accumulated worth trend data found: 012684
+2021-07-06 15:54:31,085:ERROR:No accumulated worth trend data found: 012683
+2021-07-06 15:54:31,088:ERROR:No accumulated worth trend data found: 012655
+2021-07-06 15:54:31,088:ERROR:No accumulated worth trend data found: 012650
+2021-07-06 15:54:31,089:ERROR:No accumulated worth trend data found: 012651
+2021-07-06 15:54:31,093:ERROR:No accumulated worth trend data found: 012658
+2021-07-06 15:54:31,094:ERROR:No accumulated worth trend data found: 012671
+2021-07-06 15:54:31,094:ERROR:No accumulated worth trend data found: 012654
+2021-07-06 15:54:31,096:ERROR:No accumulated worth trend data found: 012689
+2021-07-06 15:54:31,097:ERROR:Server error, wait 5 seconds: 012728
+2021-07-06 15:54:31,132:ERROR:No accumulated worth trend data found: 012726
+2021-07-06 15:54:31,148:ERROR:No accumulated worth trend data found: 012723
+2021-07-06 15:54:31,159:ERROR:No accumulated worth trend data found: 012697
+2021-07-06 15:54:31,192:ERROR:No accumulated worth trend data found: 012696
+2021-07-06 15:54:31,196:ERROR:No accumulated worth trend data found: 012722
+2021-07-06 15:54:31,196:ERROR:No accumulated worth trend data found: 012720
+2021-07-06 15:54:31,215:ERROR:No accumulated worth trend data found: 012737
+2021-07-06 15:54:31,218:ERROR:No accumulated worth trend data found: 012727
+2021-07-06 15:54:31,221:ERROR:No accumulated worth trend data found: 012738
+2021-07-06 15:54:31,229:ERROR:No accumulated worth trend data found: 012719
+2021-07-06 15:54:35,926:ERROR:Server error, wait 5 seconds: 012613
+2021-07-06 15:54:35,951:ERROR:Server error, wait 5 seconds: 012615
+2021-07-06 15:54:36,063:ERROR:Server error, wait 5 seconds: 012662
+2021-07-06 15:54:36,063:ERROR:Server error, wait 5 seconds: 012661
+2021-07-06 15:54:36,067:ERROR:Server error, wait 5 seconds: 012687
+2021-07-06 15:54:36,098:ERROR:Server error, wait 5 seconds: 012728
+2021-07-06 15:54:47,821:ERROR:No accumulated worth trend data found: 012687
+2021-07-06 15:54:47,834:ERROR:No accumulated worth trend data found: 012662
+2021-07-06 15:54:47,836:ERROR:No accumulated worth trend data found: 012661
+2021-07-06 15:54:47,845:ERROR:No accumulated worth trend data found: 012613
+2021-07-06 15:54:48,104:ERROR:No accumulated worth trend data found: 012763
+2021-07-06 15:54:48,106:ERROR:No accumulated worth trend data found: 012758
+2021-07-06 15:54:48,111:ERROR:No accumulated worth trend data found: 012755
+2021-07-06 15:54:48,112:ERROR:No accumulated worth trend data found: 012791
+2021-07-06 15:54:48,131:ERROR:No accumulated worth trend data found: 012780
+2021-07-06 15:54:48,142:ERROR:No accumulated worth trend data found: 012779
+2021-07-06 15:54:48,144:ERROR:No accumulated worth trend data found: 012792
+2021-07-06 15:54:48,147:ERROR:No accumulated worth trend data found: 012754
+2021-07-06 15:54:48,149:ERROR:No accumulated worth trend data found: 012744
+2021-07-06 15:54:48,150:ERROR:No accumulated worth trend data found: 012764
+2021-07-06 15:54:48,151:ERROR:No accumulated worth trend data found: 012748
+2021-07-06 15:54:48,164:ERROR:No accumulated worth trend data found: 012749
+2021-07-06 15:54:48,179:ERROR:No accumulated worth trend data found: 012847
+2021-07-06 15:54:48,182:ERROR:No accumulated worth trend data found: 012835
+2021-07-06 15:54:48,193:ERROR:No accumulated worth trend data found: 012828
+2021-07-06 15:54:48,207:ERROR:No accumulated worth trend data found: 012894
+2021-07-06 15:54:48,209:ERROR:No accumulated worth trend data found: 012829
+2021-07-06 15:54:48,213:ERROR:No accumulated worth trend data found: 012879
+2021-07-06 15:54:48,217:ERROR:No accumulated worth trend data found: 012833
+2021-07-06 15:54:48,218:ERROR:No accumulated worth trend data found: 012836
+2021-07-06 15:54:48,219:ERROR:No accumulated worth trend data found: 012882
+2021-07-06 15:54:48,226:ERROR:No accumulated worth trend data found: 012883
+2021-07-06 15:54:48,230:ERROR:No accumulated worth trend data found: 012834
+2021-07-06 15:54:48,232:ERROR:No accumulated worth trend data found: 012878
+2021-07-06 15:54:48,293:ERROR:No accumulated worth trend data found: 012820
+2021-07-06 15:54:48,296:ERROR:No accumulated worth trend data found: 012912
+2021-07-06 15:54:48,299:ERROR:No accumulated worth trend data found: 012899
+2021-07-06 15:54:48,304:ERROR:No accumulated worth trend data found: 012911
+2021-07-06 15:54:48,308:ERROR:No accumulated worth trend data found: 012895
+2021-07-06 15:54:48,414:ERROR:No accumulated worth trend data found: 012908
+2021-07-06 15:54:48,575:ERROR:No accumulated worth trend data found: 012898
+2021-07-06 15:54:48,590:ERROR:No accumulated worth trend data found: 012907
+2021-07-06 15:54:52,730:ERROR:Page not found: 041011
+2021-07-06 15:54:52,988:ERROR:Page not found: 041001
+2021-07-06 15:54:53,010:ERROR:Page not found: 041008
+2021-07-06 15:54:53,032:ERROR:Page not found: 041007
+2021-07-06 15:54:53,083:ERROR:Page not found: 041004
+2021-07-06 15:54:53,129:ERROR:Page not found: 041005
+2021-07-06 15:54:53,129:ERROR:Page not found: 041002
+2021-07-06 15:55:09,145:ERROR:Page not found: 051001
+2021-07-06 15:55:33,422:ERROR:Page not found: 051201
+2021-07-06 15:55:33,446:ERROR:Page not found: 051014
+2021-07-06 15:55:33,507:ERROR:Page not found: 051010
+2021-07-06 15:55:36,328:ERROR:Page not found: 091003
+2021-07-06 15:55:36,502:ERROR:Page not found: 091001
+2021-07-06 15:55:37,243:ERROR:Page not found: 091006
+2021-07-06 15:55:37,342:ERROR:Page not found: 100030
+2021-07-06 15:55:37,392:ERROR:Page not found: 100033
+2021-07-06 15:55:37,551:ERROR:Page not found: 100017
+2021-07-06 15:55:37,551:ERROR:Page not found: 100027
+2021-07-06 15:55:37,694:ERROR:Page not found: 100023
+2021-07-06 15:55:37,718:ERROR:Page not found: 100021
+2021-07-06 15:56:23,437:ERROR:No accumulated worth trend data found: 159710
+2021-07-06 15:56:23,515:ERROR:Page not found: 128001
+2021-07-06 15:56:23,549:ERROR:Page not found: 128008
+2021-07-06 15:56:23,571:ERROR:Page not found: 128002
+2021-07-06 15:56:23,573:ERROR:No accumulated worth trend data found: 159729
+2021-07-06 15:56:23,630:ERROR:No accumulated worth trend data found: 159752
+2021-07-06 15:56:23,646:ERROR:No accumulated worth trend data found: 159766
+2021-07-06 15:56:23,792:ERROR:Page not found: 128005
+2021-07-06 15:56:23,820:ERROR:No accumulated worth trend data found: 159720
+2021-07-06 15:56:24,303:ERROR:Page not found: 128006
+2021-07-06 15:56:24,680:ERROR:No accumulated worth trend data found: 159830
+2021-07-06 15:56:24,925:ERROR:No accumulated worth trend data found: 159838
+2021-07-06 15:56:24,962:ERROR:No accumulated worth trend data found: 159757
+2021-07-06 15:56:25,706:ERROR:No accumulated worth trend data found: 159846
+2021-07-06 15:56:26,661:ERROR:No accumulated worth trend data found: 159853
+2021-07-06 15:56:26,976:ERROR:No accumulated worth trend data found: 159847
+2021-07-06 15:57:44,425:ERROR:Page not found: 160107
+2021-07-06 15:57:44,552:ERROR:Page not found: 160120
+2021-07-06 16:02:33,754:ERROR:Page not found: 162606
+2021-07-06 16:02:38,006:ERROR:Page not found: 163403
+2021-07-06 16:02:38,114:ERROR:Page not found: 163408
+2021-07-06 16:02:38,208:ERROR:Page not found: 163410
+2021-07-06 16:02:44,151:ERROR:Page not found: 163416
+2021-07-06 16:02:44,173:ERROR:Page not found: 163413
+2021-07-06 16:04:11,595:ERROR:Page not found: 180011
+2021-07-06 16:04:29,136:ERROR:Page not found: 201001
+2021-07-06 16:04:29,159:ERROR:Page not found: 201002
+2021-07-06 16:04:29,383:ERROR:Page not found: 202004
+2021-07-06 16:04:29,405:ERROR:Page not found: 202018
+2021-07-06 16:04:29,427:ERROR:Page not found: 202006
+2021-07-06 16:04:29,517:ERROR:Page not found: 202012
+2021-07-06 16:04:29,539:ERROR:Page not found: 202010
+2021-07-06 16:04:29,585:ERROR:Page not found: 202016
+2021-07-06 16:04:29,612:ERROR:Page not found: 202008
+2021-07-06 16:04:29,984:ERROR:Page not found: 202020
+2021-07-06 16:04:30,053:ERROR:Page not found: 202022
+2021-07-06 16:04:30,054:ERROR:Page not found: 202026
+2021-07-06 16:04:30,054:ERROR:Page not found: 202024
+2021-07-06 16:04:35,400:ERROR:Page not found: 213908
+2021-07-06 16:07:24,969:ERROR:Page not found: 257021
+2021-07-06 16:07:24,969:ERROR:Page not found: 257031
+2021-07-06 16:07:25,186:ERROR:Page not found: 240015
+2021-07-06 16:07:26,122:ERROR:Page not found: 257041
+2021-07-06 16:07:26,623:ERROR:Page not found: 270015
+2021-07-06 16:07:26,645:ERROR:Page not found: 270017
+2021-07-06 16:07:26,719:ERROR:Page not found: 270016
+2021-07-06 16:07:26,952:ERROR:Page not found: 270020
+2021-07-06 16:07:27,363:ERROR:Page not found: 270012
+2021-07-06 16:07:28,506:ERROR:Page not found: 270011
+2021-07-06 16:07:28,608:ERROR:Page not found: 270036
+2021-07-06 16:08:17,294:ERROR:Page not found: 398012
+2021-07-06 16:08:17,317:ERROR:Page not found: 398002
+2021-07-06 16:08:19,246:ERROR:Page not found: 400012
+2021-07-06 16:08:19,268:ERROR:Page not found: 400008
+2021-07-06 16:08:21,502:ERROR:Page not found: 400004
+2021-07-06 16:09:17,961:ERROR:Page not found: 511081
+2021-07-06 16:10:06,576:ERROR:No accumulated worth trend data found: 513700
+2021-07-06 16:10:23,160:ERROR:Page not found: 515293
+2021-07-06 16:10:32,768:ERROR:Page not found: 516163
+2021-07-06 16:10:33,382:ERROR:No accumulated worth trend data found: 516170
+2021-07-06 16:10:34,128:ERROR:No accumulated worth trend data found: 516100
+2021-07-06 16:10:35,949:ERROR:No accumulated worth trend data found: 516270
+2021-07-06 16:10:35,951:ERROR:No accumulated worth trend data found: 516260
+2021-07-06 16:10:40,519:ERROR:No accumulated worth trend data found: 516720
+2021-07-06 16:10:40,530:ERROR:No accumulated worth trend data found: 516580
+2021-07-06 16:10:40,829:ERROR:No accumulated worth trend data found: 516920
+2021-07-06 16:10:40,858:ERROR:No accumulated worth trend data found: 516860
+2021-07-06 16:10:40,861:ERROR:No accumulated worth trend data found: 516890
+2021-07-06 16:10:40,863:ERROR:No accumulated worth trend data found: 516930
+2021-07-06 16:10:41,387:ERROR:No accumulated worth trend data found: 517120
+2021-07-06 16:10:41,396:ERROR:No accumulated worth trend data found: 517380
+2021-07-06 16:10:42,005:ERROR:Page not found: 519010
+2021-07-06 16:10:42,034:ERROR:Page not found: 519009
+2021-07-06 16:10:43,241:ERROR:Page not found: 519036
+2021-07-06 16:10:45,086:ERROR:Page not found: 519088
+2021-07-06 16:10:45,397:ERROR:Page not found: 519067
+2021-07-06 16:10:45,548:ERROR:Page not found: 519071
+2021-07-06 16:10:48,629:ERROR:Page not found: 519070
+2021-07-06 16:12:33,805:ERROR:Page not found: 519301
+2021-07-06 16:12:34,045:ERROR:Page not found: 519182
+2021-07-06 16:12:45,678:ERROR:Page not found: 519693
+2021-07-06 16:12:45,744:ERROR:Page not found: 519691
+2021-07-06 16:12:45,744:ERROR:Page not found: 519687
+2021-07-06 16:12:45,745:ERROR:Page not found: 519689
+2021-07-06 16:13:05,284:ERROR:Page not found: 519695
+2021-07-06 16:13:14,387:ERROR:Page not found: 519728
+2021-07-06 16:13:14,927:ERROR:Page not found: 519701
+2021-07-06 16:13:15,281:ERROR:Page not found: 519699
+2021-07-06 16:13:15,303:ERROR:Page not found: 519715
+2021-07-06 16:13:15,429:ERROR:Page not found: 519739
+2021-07-06 16:13:15,785:ERROR:Page not found: 519705
+2021-07-06 16:13:15,867:ERROR:Page not found: 519707
+2021-07-06 16:13:16,078:ERROR:Page not found: 519713
+2021-07-06 16:13:16,494:ERROR:Page not found: 519737
+2021-07-06 16:13:17,101:ERROR:Page not found: 519703
+2021-07-06 16:13:17,511:ERROR:Page not found: 519990
+2021-07-06 16:13:17,715:ERROR:Page not found: 519986
+2021-07-06 16:13:20,421:ERROR:Page not found: 519996
+2021-07-06 16:13:20,654:ERROR:Page not found: 519992
+2021-07-06 16:13:20,676:ERROR:Page not found: 519994
+2021-07-06 16:13:23,187:ERROR:Page not found: 541002
+2021-07-06 16:13:23,209:ERROR:Page not found: 541001
+2021-07-06 16:13:25,025:ERROR:Page not found: 541004
+2021-07-06 16:13:38,732:ERROR:No accumulated worth trend data found: 562880
+2021-07-06 16:13:38,957:ERROR:Page not found: 551001
+2021-07-06 16:13:38,996:ERROR:No accumulated worth trend data found: 588060
+2021-07-06 16:13:39,576:ERROR:Page not found: 581002
+2021-07-06 16:13:48,398:ERROR:No accumulated worth trend data found: 561900
+2021-07-06 16:13:54,028:ERROR:Page not found: 860011
+2021-07-06 16:13:54,136:ERROR:No accumulated worth trend data found: 872018
+2021-07-06 16:13:54,268:ERROR:No accumulated worth trend data found: 872020
+2021-07-06 16:13:57,033:ERROR:No accumulated worth trend data found: 910026

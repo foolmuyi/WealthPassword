@@ -93,9 +93,9 @@ class Backtester(object):
 # fund_code = '004789'
 code_list = ['005969','006253','007193','501058','006448','004235','007995','008764','002360','005856','004533','004041']
 start_date = datetime.date(2019,6,10)
-end_date = datetime.date(2021,6,10)
+end_date = datetime.date(2021,7,1)
 
-fund_code = '002190'
+fund_code = '006327'
 tester1 = Backtester(fund_code,start_date,end_date)
 tester1.test(12,14)
 tester1.show_plot(12,14)
