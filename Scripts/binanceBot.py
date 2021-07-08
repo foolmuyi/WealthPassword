@@ -8,7 +8,7 @@ import smtplib
 from email.mime.text import MIMEText
 
 
-# This script runs at xx:14, xx:29, xx:44, xx:59
+# This script runs every 15 minutes
 
 
 # calcute ema
@@ -29,7 +29,7 @@ def ema(data,period):
 
 # acquire k line data
 def getData():
-	kline_url = 'https://fapi.binance.com/fapi/v1/klines?symbol=ETHUSDT&interval=15m&limit=1500'
+	kline_url = 'https://fapi.binance.com/fapi/v1/klines?symbol=ETHBUSD&interval=15m&limit=1500'
 	res = requests.get(kline_url)
 	raw_data = json.loads(res.text)
 	# open_price = [each[1] for each in raw_data]
@@ -54,7 +54,7 @@ def getSig(API_secret,query_string):
 def setLeverage(API_key,API_secret):
 	leverage_url = 'https://fapi.binance.com/fapi/v1/leverage'
 	timestamp = int(time.time()*1000)
-	query_string = {'symbol':'ETHUSDT','leverage':5,'timestamp':timestamp}
+	query_string = {'symbol':'ETHBUSD','leverage':5,'timestamp':timestamp}
 	query_string['signature'] = getSig(API_secret,param2string(query_string))
 	res = requests.post(url=leverage_url,headers={'X-MBX-APIKEY':API_key},data=query_string)
 	return res
@@ -72,7 +72,7 @@ def getAccountInfo(API_key,API_secret):
 def getMakerPrice(API_key,API_secret):
 	info_url = 'https://fapi.binance.com//fapi/v1/ticker/bookTicker'
 	timestamp = int(time.time()*1000)
-	query_string = {'symbol':'ETHUSDT'}
+	query_string = {'symbol':'ETHBUSD'}
 	res = requests.get(url=info_url,params=query_string)
 	return res
 
@@ -80,7 +80,7 @@ def getMakerPrice(API_key,API_secret):
 def order(API_key,API_secret,side,quantity):
 	order_url = 'https://fapi.binance.com/fapi/v1/order'
 	timestamp = int(time.time()*1000)
-	query_string = {'symbol':'ETHUSDT','side':side,'type':'MARKET','quantity':quantity,'timestamp':timestamp}
+	query_string = {'symbol':'ETHBUSD','side':side,'type':'MARKET','quantity':quantity,'timestamp':timestamp}
 	query_string['signature'] = getSig(API_secret,param2string(query_string))
 	res = requests.post(url=order_url,headers={'X-MBX-APIKEY':API_key},data=query_string)
 	return res
@@ -95,7 +95,7 @@ def order_maker(API_key,API_secret,side,quantity):
 		maker_price = float(maker_price_info['bidPrice'])
 	elif side == 'SELL':
 		maker_price = float(maker_price_info['askPrice'])
-	query_string = {'symbol':'ETHUSDT','side':side,'type':'LIMIT','quantity':quantity,'price':maker_price,'timeInForce':'GTX','timestamp':timestamp}
+	query_string = {'symbol':'ETHBUSD','side':side,'type':'LIMIT','quantity':quantity,'price':maker_price,'timeInForce':'GTX','timestamp':timestamp}
 	query_string['signature'] = getSig(API_secret,param2string(query_string))
 	res = requests.post(url=order_url,headers={'X-MBX-APIKEY':API_key},data=query_string)
 	return res
@@ -104,7 +104,7 @@ def order_maker(API_key,API_secret,side,quantity):
 def getOpenOrders(API_key,API_secret):
 	info_url = 'https://fapi.binance.com/fapi/v1/openOrders'
 	timestamp = int(time.time()*1000)
-	query_string = {'symbol':'ETHUSDT','timestamp':timestamp}
+	query_string = {'symbol':'ETHBUSD','timestamp':timestamp}
 	query_string['signature'] = getSig(API_secret,param2string(query_string))
 	res = requests.get(url=info_url,headers={'X-MBX-APIKEY':API_key},params=query_string)
 	return res
@@ -113,7 +113,7 @@ def getOpenOrders(API_key,API_secret):
 def closeOpenOrders(API_key,API_secret):
 	info_url = 'https://fapi.binance.com//fapi/v1/allOpenOrders'
 	timestamp = int(time.time()*1000)
-	query_string = {'symbol':'ETHUSDT','timestamp':timestamp}
+	query_string = {'symbol':'ETHBUSD','timestamp':timestamp}
 	query_string['signature'] = getSig(API_secret,param2string(query_string))
 	res = requests.delete(url=info_url,headers={'X-MBX-APIKEY':API_key},params=query_string)
 	return res
@@ -138,15 +138,15 @@ def run():
 	API_key = 'APIKEYEXAMPLE'
 	API_secret = 'APISECRETEXAMPLE'
 	fast_factor = 3
-	slow_factor = 4
+	slow_factor = 6
 	quantity = 0.03
 	# setLeverage(API_key,API_secret)    # for test
 	account_info_res = getAccountInfo(API_key,API_secret)
 	account_info = json.loads(account_info_res.text)
-	ETHUSDT_info = [each for each in account_info['positions'] if each['symbol'] == 'ETHUSDT'][-1]
-	positionAmt = float(ETHUSDT_info['positionAmt'])    # current position
-	entry_price = float(ETHUSDT_info['entryPrice'])
-	close_price = getData()
+	ETHBUSD_info = [each for each in account_info['positions'] if each['symbol'] == 'ETHBUSD'][-1]
+	positionAmt = float(ETHBUSD_info['positionAmt'])    # current position
+	entry_price = float(ETHBUSD_info['entryPrice'])
+	close_price = getData()[:-1]    # delete the last price because the last one is current price
 	ema_fast = ema(close_price,fast_factor)
 	ema_slow = ema(close_price,slow_factor)
 
@@ -161,16 +161,16 @@ def run():
 	if positionAmt > 0:
 		if ema_fast[-1] < ema_slow[-1]:    # 趋势反转，平多
 			order(API_key,API_secret,'SELL',quantity)
-		elif (close_price[-1]-entry_price)/entry_price < -0.013:    # 止损
+		elif (close_price[-1]-entry_price)/entry_price < -0.008:    # 止损
 			order(API_key,API_secret,'SELL',quantity)
-		elif (close_price[-1]-entry_price)/entry_price > 0.02:    # 止盈
-			order(API_key,API_secret,'SELL',quantity)
+		elif (close_price[-1]-entry_price)/entry_price > 0.008:    # 止盈
+			order_maker(API_key,API_secret,'SELL',quantity)
 	elif positionAmt < 0:
 		if ema_fast[-1] > ema_slow[-1]:    # 趋势反转，平空
 			order(API_key,API_secret,'BUY',quantity)
-		elif (close_price[-1]-entry_price)/entry_price < -0.02:    # 止盈
-			order(API_key,API_secret,'BUY',quantity)
-		elif (close_price[-1]-entry_price)/entry_price > 0.013:    # 止损
+		elif (close_price[-1]-entry_price)/entry_price < -0.008:    # 止盈
+			order_maker(API_key,API_secret,'BUY',quantity)
+		elif (close_price[-1]-entry_price)/entry_price > 0.008:    # 止损
 			order(API_key,API_secret,'BUY',quantity)
 	else:
 		pass

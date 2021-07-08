@@ -157,4 +157,4 @@ class DataCollector(object):
 
 collector = DataCollector()
 asyncio.run(collector.dlAllFund())
-# asyncio.run(collector.dl100Fund([['002943'],['005267']]))
+# asyncio.run(collector.dl100Fund([['515220'],['515210'],['512290'],['515170'],['512760'],['512400'],['513050'],['515030'],['510300'],['510050'],['159949'],['512170'],['512480'],['512690'],['159825']]))

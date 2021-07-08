@@ -12,6 +12,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import mpl_toolkits.mplot3d
 import alchemist as am
+import multiprocessing
 
 
 class Backtester(object):
@@ -46,7 +47,7 @@ class Backtester(object):
 		if self.balance > 0:
 			tomo,tomo_accWorth = self.getTomoPrice()
 			self.myShares += self.balance/tomo_accWorth
-			print('Buy '+str(self.balance)+' on '+str(tomo))
+			# print('Buy '+str(self.balance)+' on '+str(tomo))
 			self.balance = 0
 			self.buy_date.append(tomo)
 
@@ -56,7 +57,7 @@ class Backtester(object):
 			sell_amount = round(self.myShares*tomo_accWorth*0.995,2)    # 粗略假设手续费0.5%
 			sell_amount = round(self.myShares*tomo_accWorth,2)
 			self.balance += sell_amount
-			print('Sell '+str(sell_amount)+' on '+str(tomo))
+			# print('Sell '+str(sell_amount)+' on '+str(tomo))
 			self.myShares = 0
 			self.sell_date.append(tomo)
 
@@ -90,26 +91,36 @@ class Backtester(object):
 			return 0
 
 
-# fund_code = '004789'
-code_list = ['005969','006253','007193','501058','006448','004235','007995','008764','002360','005856','004533','004041']
-start_date = datetime.date(2019,6,10)
+code_list = ['512290','512760','512400','513050','510300','510050','159949','512170','512480','512690']
+start_date = datetime.date(2019,9,3)
 end_date = datetime.date(2021,7,1)
 
-fund_code = '006327'
+fund_code = '512690'
 tester1 = Backtester(fund_code,start_date,end_date)
-tester1.test(12,14)
-tester1.show_plot(12,14)
+tester1.test(12,21)
+tester1.show_plot(12,21)
 
-# for fast_param in range(2,3):
-# 	for slow_param in range(3,20):
-# 		ratio_avg = 0
-# 		for fund_code in code_list:
+# def run(code_list,start_date,end_date,fast_param,slow_param):
+# 	ratio_avg = 0
+# 	for fund_code in code_list:
+# 		try:
 # 			tester1 = Backtester(fund_code,start_date,end_date)
 # 			ratio_avg += tester1.test(fast_param,slow_param)
-# 		ratio_avg = ratio_avg/len(code_list)
-# 		print('{}{}+{}{}: {:.2f}'.format('EMA',fast_param,'EMA',slow_param,ratio_avg))
+# 		except Exception as e:
+# 			print(fund_code)
+# 			print(e)
+# 	ratio_avg = ratio_avg/len(code_list)
+# 	print('{}{}+{}{}: {:.2f}'.format('EMA',fast_param,'EMA',slow_param,ratio_avg))
 
-# # tester1.show_plot()
+# pool = multiprocessing.Pool(6)
+# manager = multiprocessing.Manager()
+
+# for fast_param in range(3,20):
+# 	for slow_param in range(fast_param+1,fast_param+20,2):
+# 		pool.apply_async(run,(code_list,start_date,end_date,fast_param,slow_param,))
+
+# pool.close()
+# pool.join()
 
 # ratio_ref = 0
 # for fund_code in code_list:
@@ -122,11 +133,173 @@ tester1.show_plot(12,14)
 # print('{}: {:.2f}'.format('ref',ratio_ref/len(code_list)))
 
 
-
-# ['001984', '001915', '005689', '001717', '005176', '000727', '004851', '001508', '005303', '001766', '001510', '005304', '003230', '002264', 
-# '003231', '002770', '002771', '001171', '004075', '050026', '161219', '161726', '213001', '000924', '000220', '001558', '002408', '005112', 
-# '519026', '001559', '000977', '000339', '002446', '001069', '005520', '000831', '003095', '002124', '240020', '003096', '005805', '001864', 
-# '002708', '161616', '460005', '006113', '001645', '000523', '004905', '161035', '006228', '005760', '001538', '003291', '110023', '206009', 
-# '200012', '000452', '519773', '000960', '005825', '001815', '006229', '470006', '002082', '001388', '501009', '512290', '003032', '501010', 
-# '020010', '000020', '001822', '002780', '121006', '006756', '001387', '320012', '005738', '007043', '002213', '005726', '001218', '002300', 
-# '006757', '501005', '006240', '161727', '005911', '501006', '001861', '006881', '000362', '002340', '001182', '240001', '003581', '006241', '005671', '002980']
+# EMA3+EMA6: 0.37
+# EMA3+EMA8: 0.45
+# EMA3+EMA10: 0.47
+# EMA3+EMA14: 0.50
+# EMA3+EMA12: 0.46
+# EMA3+EMA4: 0.42
+# EMA3+EMA18: 0.52
+# EMA3+EMA16: 0.48
+# EMA3+EMA20: 0.55
+# EMA4+EMA7: 0.47
+# EMA3+EMA22: 0.54
+# EMA4+EMA5: 0.54
+# EMA4+EMA9: 0.48
+# EMA4+EMA11: 0.46
+# EMA4+EMA13: 0.50
+# EMA4+EMA17: 0.47
+# EMA4+EMA15: 0.50
+# EMA4+EMA19: 0.53
+# EMA4+EMA21: 0.51
+# EMA4+EMA23: 0.57
+# EMA5+EMA10: 0.58
+# EMA5+EMA6: 0.58
+# EMA5+EMA8: 0.55
+# EMA5+EMA12: 0.52
+# EMA5+EMA14: 0.57
+# EMA5+EMA16: 0.57
+# EMA5+EMA22: 0.62
+# EMA5+EMA18: 0.57
+# EMA5+EMA20: 0.62
+# EMA5+EMA24: 0.65
+# EMA6+EMA9: 0.53
+# EMA6+EMA7: 0.57
+# EMA6+EMA11: 0.52
+# EMA6+EMA13: 0.58
+# EMA6+EMA15: 0.61
+# EMA6+EMA17: 0.51
+# EMA6+EMA19: 0.65
+# EMA6+EMA21: 0.65
+# EMA6+EMA23: 0.67
+# EMA6+EMA25: 0.66
+# EMA7+EMA8: 0.46
+# EMA7+EMA10: 0.53
+# EMA7+EMA14: 0.61
+# EMA7+EMA12: 0.53
+# EMA7+EMA16: 0.61
+# EMA7+EMA18: 0.62
+# EMA7+EMA22: 0.63
+# EMA7+EMA20: 0.68
+# EMA7+EMA24: 0.65
+# EMA7+EMA26: 0.65
+# EMA8+EMA9: 0.56
+# EMA8+EMA11: 0.58
+# EMA8+EMA13: 0.54
+# EMA8+EMA15: 0.55
+# EMA8+EMA19: 0.68
+# EMA8+EMA21: 0.66
+# EMA8+EMA17: 0.58
+# EMA8+EMA23: 0.62
+# EMA8+EMA25: 0.67
+# EMA8+EMA27: 0.66
+# EMA9+EMA10: 0.63
+# EMA9+EMA12: 0.63
+# EMA9+EMA14: 0.56
+# EMA9+EMA20: 0.68
+# EMA9+EMA16: 0.58
+# EMA9+EMA18: 0.66
+# EMA9+EMA22: 0.62
+# EMA9+EMA24: 0.69
+# EMA9+EMA26: 0.66
+# EMA9+EMA28: 0.69
+# EMA10+EMA11: 0.60
+# EMA10+EMA13: 0.72
+# EMA10+EMA15: 0.57
+# EMA10+EMA19: 0.64
+# EMA10+EMA17: 0.60
+# EMA10+EMA21: 0.70
+# EMA10+EMA23: 0.67
+# EMA10+EMA25: 0.65
+# EMA10+EMA27: 0.67
+# EMA11+EMA12: 0.43
+# EMA10+EMA29: 0.62
+# EMA11+EMA14: 0.63
+# EMA11+EMA18: 0.66
+# EMA11+EMA16: 0.61
+# EMA11+EMA20: 0.62
+# EMA11+EMA22: 0.64
+# EMA11+EMA24: 0.65
+# EMA11+EMA26: 0.61
+# EMA11+EMA28: 0.63
+# EMA11+EMA30: 0.60
+# EMA12+EMA13: 0.58
+# EMA12+EMA15: 0.66
+# EMA12+EMA17: 0.67
+# EMA12+EMA21: 0.72
+# EMA12+EMA19: 0.64
+# EMA12+EMA23: 0.68
+# EMA12+EMA25: 0.63
+# EMA12+EMA27: 0.64
+# EMA12+EMA29: 0.59
+# EMA12+EMA31: 0.64
+# EMA13+EMA14: 0.57
+# EMA13+EMA16: 0.54
+# EMA13+EMA18: 0.56
+# EMA13+EMA20: 0.57
+# EMA13+EMA22: 0.64
+# EMA13+EMA24: 0.66
+# EMA13+EMA26: 0.63
+# EMA13+EMA28: 0.63
+# EMA13+EMA30: 0.62
+# EMA13+EMA32: 0.59
+# EMA14+EMA15: 0.50
+# EMA14+EMA17: 0.61
+# EMA14+EMA19: 0.58
+# EMA14+EMA21: 0.63
+# EMA14+EMA25: 0.59
+# EMA14+EMA23: 0.57
+# EMA14+EMA27: 0.63
+# EMA14+EMA29: 0.59
+# EMA14+EMA31: 0.60
+# EMA14+EMA33: 0.60
+# EMA15+EMA16: 0.45
+# EMA15+EMA18: 0.54
+# EMA15+EMA20: 0.62
+# EMA15+EMA22: 0.55
+# EMA15+EMA24: 0.58
+# EMA15+EMA26: 0.59
+# EMA15+EMA28: 0.61
+# EMA15+EMA30: 0.60
+# EMA15+EMA34: 0.52
+# EMA15+EMA32: 0.60
+# EMA16+EMA17: 0.53
+# EMA16+EMA19: 0.49
+# EMA16+EMA21: 0.56
+# EMA16+EMA23: 0.53
+# EMA16+EMA25: 0.57
+# EMA16+EMA27: 0.59
+# EMA16+EMA29: 0.54
+# EMA16+EMA31: 0.60
+# EMA16+EMA35: 0.51
+# EMA16+EMA33: 0.54
+# EMA17+EMA18: 0.47
+# EMA17+EMA20: 0.52
+# EMA17+EMA22: 0.50
+# EMA17+EMA24: 0.58
+# EMA17+EMA26: 0.60
+# EMA17+EMA28: 0.59
+# EMA17+EMA30: 0.54
+# EMA17+EMA32: 0.55
+# EMA17+EMA34: 0.52
+# EMA17+EMA36: 0.51
+# EMA18+EMA19: 0.29
+# EMA18+EMA21: 0.56
+# EMA18+EMA23: 0.48
+# EMA18+EMA25: 0.56
+# EMA18+EMA27: 0.53
+# EMA18+EMA29: 0.49
+# EMA18+EMA31: 0.51
+# EMA18+EMA35: 0.51
+# EMA18+EMA33: 0.50
+# EMA18+EMA37: 0.51
+# EMA19+EMA20: 0.67
+# EMA19+EMA22: 0.54
+# EMA19+EMA26: 0.52
+# EMA19+EMA24: 0.56
+# EMA19+EMA28: 0.55
+# EMA19+EMA30: 0.52
+# EMA19+EMA32: 0.48
+# EMA19+EMA34: 0.53
+# EMA19+EMA36: 0.55
+# EMA19+EMA38: 0.46
