@@ -140,16 +140,16 @@ class Backtester(object):
 			if self.state == 'bought':
 				if ema_fast[-1] < ema_slow[-1]:
 					self.closeLong(i)
-				elif (close_price[i-1]-self.buy_price)/self.buy_price < -0.003:
+				elif (close_price[i-1]-self.buy_price)/self.buy_price < -0.008:
 					self.closeLong(i) 
-				elif (close_price[i-1]-self.buy_price)/self.buy_price > 0.003:
+				elif (close_price[i-1]-self.buy_price)/self.buy_price > 0.008:
 					self.closeLong(i)
 			elif self.state == 'sold':
 				if ema_fast[-1] > ema_slow[-1]:
 					self.closeShort(i)
-				elif (close_price[i-1]-self.sell_price)/self.sell_price < -0.003:
+				elif (close_price[i-1]-self.sell_price)/self.sell_price < -0.008:
 					self.closeShort(i)
-				elif (close_price[i-1]-self.sell_price)/self.sell_price > 0.003:
+				elif (close_price[i-1]-self.sell_price)/self.sell_price > 0.008:
 					self.closeShort(i)
 			else:
 				pass

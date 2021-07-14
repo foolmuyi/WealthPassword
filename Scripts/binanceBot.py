@@ -118,6 +118,14 @@ def closeOpenOrders(API_key,API_secret):
 	res = requests.delete(url=info_url,headers={'X-MBX-APIKEY':API_key},params=query_string)
 	return res
 
+def getPositionAndPrice(API_key,API_secret):
+	account_info_res = getAccountInfo(API_key,API_secret)
+	account_info = json.loads(account_info_res.text)
+	ETHBUSD_info = [each for each in account_info['positions'] if each['symbol'] == 'ETHBUSD'][-1]
+	positionAmt = float(ETHBUSD_info['positionAmt'])    # current position
+	entry_price = float(ETHBUSD_info['entryPrice'])
+	return positionAmt,entry_price
+
 # send email to me when error occures
 def sendMail(mail_content,subject='Error Occurred!'):
 	mail_host = 'smtp.163.com'
@@ -139,13 +147,9 @@ def run():
 	API_secret = 'APISECRETEXAMPLE'
 	fast_factor = 3
 	slow_factor = 6
-	quantity = 0.03
+	quantity = 0.04
 	# setLeverage(API_key,API_secret)    # for test
-	account_info_res = getAccountInfo(API_key,API_secret)
-	account_info = json.loads(account_info_res.text)
-	ETHBUSD_info = [each for each in account_info['positions'] if each['symbol'] == 'ETHBUSD'][-1]
-	positionAmt = float(ETHBUSD_info['positionAmt'])    # current position
-	entry_price = float(ETHBUSD_info['entryPrice'])
+	positionAmt, entry_price = getPositionAndPrice(API_key,API_secret)
 	close_price = getData()[:-1]    # delete the last price because the last one is current price
 	ema_fast = ema(close_price,fast_factor)
 	ema_slow = ema(close_price,slow_factor)
@@ -160,26 +164,32 @@ def run():
 	# # 平仓
 	if positionAmt > 0:
 		if ema_fast[-1] < ema_slow[-1]:    # 趋势反转，平多
-			order(API_key,API_secret,'SELL',quantity)
+			order(API_key,API_secret,'SELL',positionAmt)
 		elif (close_price[-1]-entry_price)/entry_price < -0.008:    # 止损
-			order(API_key,API_secret,'SELL',quantity)
+			order(API_key,API_secret,'SELL',positionAmt)
 		elif (close_price[-1]-entry_price)/entry_price > 0.008:    # 止盈
-			order_maker(API_key,API_secret,'SELL',quantity)
+			order_maker(API_key,API_secret,'SELL',positionAmt)
 	elif positionAmt < 0:
 		if ema_fast[-1] > ema_slow[-1]:    # 趋势反转，平空
-			order(API_key,API_secret,'BUY',quantity)
+			order(API_key,API_secret,'BUY',-positionAmt)
 		elif (close_price[-1]-entry_price)/entry_price < -0.008:    # 止盈
-			order_maker(API_key,API_secret,'BUY',quantity)
+			order_maker(API_key,API_secret,'BUY',-positionAmt)
 		elif (close_price[-1]-entry_price)/entry_price > 0.008:    # 止损
-			order(API_key,API_secret,'BUY',quantity)
+			order(API_key,API_secret,'BUY',-positionAmt)
 	else:
 		pass
 
+	# wait maker order to complete
+	time.sleep(5)
+	
+	# check current position again before open position
+	positionAmt, _ = getPositionAndPrice(API_key,API_secret)
+
 	# 建仓
 	if (ema_fast[-2] < ema_slow[-2]) and (ema_fast[-1] > ema_slow[-1]) and (positionAmt == 0):
-		order_maker(API_key,API_secret,'BUY',quantity)
+		order(API_key,API_secret,'BUY',quantity)
 	elif (ema_fast[-2] > ema_slow[-2]) and (ema_fast[-1] < ema_slow[-1]) and (positionAmt == 0):
-		order_maker(API_key,API_secret,'SELL',quantity)
+		order(API_key,API_secret,'SELL',quantity)
 	else:
 		pass
 
