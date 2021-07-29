@@ -161,6 +161,7 @@ class Backtester(object):
 				self.sellShort(i)
 			else:
 				pass
+
 		print('EMA'+str(self.fast_param)+'+EMA'+str(self.slow_param)+': '+str(self.balance+self.myShare*close_price[-1])
 			+'    平均交易间隔: '+str(6*30*24/len(self.totalBalance))+'    胜率: '+str(self.win/(self.win+self.loss)))
 
@@ -195,14 +196,12 @@ tester.test()
 tester.show_plot()
 
 
-
 # 寻找最佳参数组合
 # pool = multiprocessing.Pool(6)
 # manager = multiprocessing.Manager()
 # param_comb = manager.dict()
-# for fast_param in range(25,35):
-# 	for slow_param in range(fast_param+3,fast_param+13):
-# 		pool.apply_async(backtest,(test_param,fast_param,slow_param,param_comb,))
+# for trend_param in range(10,200,5):
+# 	pool.apply_async(Backtester(3,6).test,(trend_param,))
 
 # pool.close()
 # pool.join()

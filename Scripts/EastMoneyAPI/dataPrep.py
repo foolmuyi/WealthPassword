@@ -25,7 +25,7 @@ class DataCollector(object):
 		context = js2py.EvalJs()  # 用js2py代替正则表达式定位JavaScript变量
 		context.execute(res.text)
 		raw_list = context.r.to_list()
-		fund_types = ['QDII', '混合-FOF', '股票型', '股票指数', '股票-FOF', 'QDII-ETF', 'ETF-场内', 'QDII-指数', '混合型', '联接基金']    # 去除了债券型、货币型等类型基金
+		fund_types = ['混合型-偏债', '指数型-股票', 'QDII', '混合型-偏股', '混合型-灵活', '股票型', '商品（不含QDII）', 'REITs', '混合型-平衡']    # 去除了债券型、货币型等类型基金
 		fund_list = [each for each in raw_list if each[3] in fund_types]
 		return fund_list
 
@@ -150,6 +150,8 @@ class DataCollector(object):
 
 	async def dlAllFund(self):
 		all_fund = self.getCodeList()
+		print(len(all_fund))
+		print(all_fund)
 		self.fund_num = len(all_fund)
 		for i in range(self.fund_num//100):
 			fund_list = all_fund[i*100:min((i+1)*100,self.fund_num+1)]
