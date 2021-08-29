@@ -155,3 +155,23 @@ def getSignal(fund_code,test_date=None,fast_param=5,slow_param=20):
 # plt.vlines(sell_spots,min(accWorth),max(accWorth),color='r')
 # plt.legend()
 # plt.show()
+
+
+
+
+def crossDetection(fast_param,slow_param):
+	file_list = os.listdir('../Data/')
+	for each in file_list:
+		file_path = os.path.join('../Data/',each)
+		df = pd.read_csv(file_path)
+		accWorth = df['AccWorth'].values.tolist()
+		try:
+			ema_fast = ema(accWorth,fast_param)
+			ema_slow = ema(accWorth,slow_param)
+			if (ema_fast[-2] <= ema_slow[-2]) and (ema_fast[-1] > ema_slow[-1]):
+				print(each[:6])
+		except Exception as e:
+			# print(each[:6]+'    '+str(e))
+			continue
+
+# crossDetection(12,21)

@@ -54,11 +54,11 @@ def calc_slope(data_list):
 columns = ['OpenTime','Open','High','Low','Close']
 EU_1m_1 = pd.read_csv('../Binance/ETHUSDT-1m-2021-04.csv').iloc[:,0:5]
 EU_1m_2 = pd.read_csv('../Binance/ETHUSDT-1m-2021-05.csv').iloc[:,0:5]
-EU_1m_3 = pd.read_csv('../Binance/ETHUSDT-1m-2021-06.csv').iloc[:,0:5]
+# EU_1m_3 = pd.read_csv('../Binance/ETHUSDT-1m-2021-06.csv').iloc[:,0:5]
 EU_1m_1.columns = columns
 EU_1m_2.columns = columns
-EU_1m_3.columns = columns
-EU_1m = pd.concat([EU_1m_1,EU_1m_2,EU_1m_3],ignore_index=True)
+# EU_1m_3.columns = columns
+EU_1m = pd.concat([EU_1m_1,EU_1m_2],ignore_index=True)
 close_price = EU_1m['Close'].values.tolist()
 open_price = EU_1m['Open'].values.tolist()
 high_price = EU_1m['High'].values.tolist()
@@ -67,11 +67,14 @@ low_price = EU_1m['Low'].values.tolist()
 columns = ['OpenTime','Open','High','Low','Close']
 EU_15m_1 = pd.read_csv('../Binance/ETHUSDT-15m-2021-04.csv').iloc[:,0:5]
 EU_15m_2 = pd.read_csv('../Binance/ETHUSDT-15m-2021-05.csv').iloc[:,0:5]
-EU_15m_3 = pd.read_csv('../Binance/ETHUSDT-15m-2021-06.csv').iloc[:,0:5]
+# EU_15m_3 = pd.read_csv('../Binance/ETHUSDT-15m-2021-06.csv').iloc[:,0:5]
 EU_15m_1.columns = columns
 EU_15m_2.columns = columns
-EU_15m_3.columns = columns
-EU_15m = pd.concat([EU_15m_1,EU_15m_2,EU_15m_3],ignore_index=True)
+# EU_15m_3.columns = columns
+EU_15m = pd.concat([EU_15m_1,EU_15m_2],ignore_index=True)
+open_price_15m = EU_15m['Open'].values.tolist()
+high_price_15m = EU_15m['High'].values.tolist()
+low_price_15m = EU_15m['Low'].values.tolist()
 close_price_15m = EU_15m['Close'].values.tolist()
 
 
@@ -92,7 +95,7 @@ class Backtester(object):
 
 	def buyLong(self,i):
 		self.state = 'bought'
-		self.buy_price = close_price[i-1]    # 脚本每小时59分运行，粗略处理为以收盘价下单
+		self.buy_price = close_price[i]    # 脚本每小时59分运行，粗略处理为以收盘价下单
 		self.myShare = self.balance/self.buy_price
 		self.balance = 0
 		print('做多: '+str(self.buy_price))
@@ -100,9 +103,8 @@ class Backtester(object):
 
 	def closeLong(self,i):
 		self.state = 'sleeping'
-		self.close_long_price = close_price[i-1]
-		# profit = (self.close_long_price-self.buy_price)*self.myShare-self.buy_price*self.myShare*0.00007
-		profit = (self.close_long_price-self.buy_price)*self.myShare
+		self.close_long_price = close_price[i]
+		profit = (self.close_long_price-self.buy_price)*self.myShare-self.buy_price*self.myShare*0.00075
 		self.balance = self.buy_price*self.myShare+profit
 		self.totalBalance.append(self.balance)    # 收益曲线统计
 		self.myShare = 0
@@ -115,7 +117,7 @@ class Backtester(object):
 
 	def sellShort(self,i):
 		self.state = 'sold'
-		self.sell_price = close_price[i-1]
+		self.sell_price = close_price[i]
 		self.myShare = self.balance/self.sell_price
 		self.balance = 0
 		print('做空: '+str(self.sell_price))
@@ -123,9 +125,8 @@ class Backtester(object):
 
 	def closeShort(self,i):
 		self.state = 'sleeping'
-		self.close_short_price = close_price[i-1]
-		# profit = (self.sell_price-self.close_short_price)*self.myShare-self.sell_price*self.myShare*0.00007
-		profit = (self.sell_price-self.close_short_price)*self.myShare
+		self.close_short_price = close_price[i]
+		profit = (self.sell_price-self.close_short_price)*self.myShare-self.sell_price*self.myShare*0.00075
 		self.balance = self.sell_price*self.myShare+profit
 		self.totalBalance.append(self.balance)    # 收益曲线统计
 		self.myShare = 0
@@ -151,6 +152,7 @@ class Backtester(object):
 			new_close_price = close_price_15m[k-200:k]
 			ema_fast = ema(new_close_price,self.fast_param)
 			ema_slow = ema(new_close_price,self.slow_param)
+			ema_trend = ema(new_close_price,199)
 
 			if self.state != 'sleeping':
 				if self.state == 'bought':
@@ -198,10 +200,12 @@ class Backtester(object):
 				
 
 			# 建仓
-			if (ema_fast[-2] < ema_slow[-2]) and (ema_fast[-1] > ema_slow[-1]) and (self.state == 'sleeping'):
+			# if (ema_fast[-2] < ema_slow[-2]) and (ema_fast[-1] > ema_slow[-1]) and (self.state == 'sleeping'):
+			if (ema_fast[-1] > ema_slow[-1] > ema_trend[-1]) and (self.state == 'sleeping'):
 				self.buyLong(i)
 				stopROE = -0.8
-			elif (ema_fast[-2] > ema_slow[-2]) and (ema_fast[-1] < ema_slow[-1]) and (self.state == 'sleeping'):
+			# elif (ema_fast[-2] > ema_slow[-2]) and (ema_fast[-1] < ema_slow[-1]) and (self.state == 'sleeping'):
+			elif (ema_fast[-1] < ema_slow[-1] < ema_trend[-1]) and (self.state == 'sleeping'):
 				self.sellShort(i)
 				stopROE = -0.8
 			else:

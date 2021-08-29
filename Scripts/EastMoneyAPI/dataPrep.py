@@ -25,8 +25,9 @@ class DataCollector(object):
 		context = js2py.EvalJs()  # 用js2py代替正则表达式定位JavaScript变量
 		context.execute(res.text)
 		raw_list = context.r.to_list()
-		fund_types = ['混合型-偏债', '指数型-股票', 'QDII', '混合型-偏股', '混合型-灵活', '股票型', '商品（不含QDII）', 'REITs', '混合型-平衡']    # 去除了债券型、货币型等类型基金
-		fund_list = [each for each in raw_list if each[3] in fund_types]
+		# fund_types = ['混合型-偏债', '指数型-股票', 'QDII', '混合型-偏股', '混合型-灵活', '股票型', '商品（不含QDII）', 'REITs', '混合型-平衡']    # 去除了债券型、货币型等类型基金
+		# fund_list = [each for each in raw_list if each[3] in fund_types]
+		fund_list = [each for each in raw_list if each[1][-3:] == 'ETF']    # 只下载ETF
 		return fund_list
 
 
@@ -159,4 +160,4 @@ class DataCollector(object):
 
 collector = DataCollector()
 asyncio.run(collector.dlAllFund())
-# asyncio.run(collector.dl100Fund([['515220'],['515210'],['512290'],['515170'],['512760'],['512400'],['513050'],['515030'],['510300'],['510050'],['159949'],['512170'],['512480'],['512690'],['159825']]))
+# asyncio.run(collector.dl100Fund([['515220'],['512400'],['513050'],['515030'],['510300'],['510050'],['159949'],['512480'],['512690'],['159825']]))
