@@ -27,12 +27,12 @@ proxies = None
 # send email to me when error occures
 def sendMail(mail_content,subject='Bybit Error Occurred!'):
     mail_host = 'smtp.163.com'
-    mail_username = 'xxx@163.com'
-    mail_pw = 'xxxxxxxxxxxx'
-    mail_recv = ['xxx@yandex.com']
+    mail_username = ''
+    mail_pw = ''
+    mail_recv = ['']
     message = MIMEText(mail_content,'plain','utf-8')
     message['Subject'] = subject
-    message['From'] = 'xxx@163.com'
+    message['From'] = ''
     message['To'] = mail_recv[0]
     smtpObj = smtplib.SMTP_SSL(mail_host,465)
     smtpObj.login(mail_username,mail_pw)
@@ -43,15 +43,15 @@ def sendMail(mail_content,subject='Bybit Error Occurred!'):
 class TradeBot(object):
 
     # parameters initialization
-    def __init__(self):
+    def __init__(self,symbol):
         self.base_url = 'https://api.bybit.com'
-        self.API_key = 'xxxxxxxxxxxx'
-        self.API_secret = 'xxxxxxxxxxxx'
-        self.symbol = 'ETHUSDT'
+        self.API_key = ''
+        self.API_secret = ''
+        self.symbol = symbol
         self.coin = 'USDT'
         self.trend_param = 400
         self.leverage = 10
-        self.ROE_file = '/home/ubuntu/BybitBot/ETHUSDT/stopROE.json'
+        self.ROE_file = '/home/ubuntu/BybitBot/USDT/stopROE_'+self.symbol+'.json'
 
     # calcute ema
     def ema(self,data,period):
@@ -63,30 +63,41 @@ class TradeBot(object):
             ema_list = []
             for i in range(len(data)):
                 if i == 0:
-                    ema_list.append(round(data[0],2))
+                    ema_list.append(round(data[0],5))
                 else:
                     ema_today = (2*data[i]+(period-1)*ema_list[i-1])/(period+1)
-                    ema_list.append(round(ema_today,2))
+                    ema_list.append(round(ema_today,5))
         return ema_list
 
     # acquire k line data
     def getData(self):
         interval = 5    # 5 minutes
-        limit = 200    # bybit limits max to 200
+        limit = 200    # bybit limits max to 200 per page
         page = 1    # 200 per page
+        page_limit = 5    # get data from page 1 to 5
         open_price = []
         close_price = []
-        while page < 5:
+        try_times = 0    # try x time if failed to get data
+        while (page < page_limit) and (try_times < 5):
             ts = str(int(time.time())-page*limit*interval*60)
-            kline_url = self.base_url+'/public/linear/kline?'+'symbol='+self.symbol+'&interval='+str(interval)+'&from='+ts+'&limit=200'
-            res = requests.get(kline_url,proxies=proxies)
-            raw_data = json.loads(res.text)['result']
-            open_price_one_page = [float(each['open']) for each in raw_data]
-            close_price_one_page = [float(each['close']) for each in raw_data]
+            try:
+                kline_url = self.base_url+'/public/linear/kline?'+'symbol='+self.symbol+'&interval='+str(interval)+'&from='+ts+'&limit=200'
+                res = requests.get(kline_url,proxies=proxies)
+                raw_data = json.loads(res.text)['result']
+                open_price_one_page = [float(each['open']) for each in raw_data]
+                close_price_one_page = [float(each['close']) for each in raw_data]
+            except Exception as e:
+                try_times += 1
+                continue
             close_price = close_price_one_page + close_price
             open_price = open_price_one_page + open_price
             page += 1
         price_data = {'open_price':open_price,'close_price':close_price}
+        # check if the data if broken
+        if (len(price_data['open_price']) == (page_limit-1)*limit) and (len(price_data['close_price']) == (page_limit-1)*limit):
+            pass
+        else:
+            price_data = None    # data broken. set price_data to None to trigger error and prevent trading
         return price_data
 
     # tool function
@@ -148,8 +159,15 @@ class TradeBot(object):
     def order(self,side,quantity,reduce_only='False'):
         order_url = self.base_url+'/private/linear/order/create'
         ts = str(int(time.time()*1000))
+        maker_price = self.getMakerPrice(side)
+        if side == 'Buy':
+            stop_loss_price = maker_price*(1-0.01)    # set a auto stop loss price in case the cloud server crashes
+        elif side == 'Sell':
+            stop_loss_price = maker_price*(1+0.01)
+        else:
+            pass
         query_string = {'api_key':self.API_key,'side':side,'symbol':self.symbol,'order_type':'Market','qty':str(quantity),'time_in_force':'GoodTillCancel',
-        'close_on_trigger':'False','reduce_only':str(reduce_only),'timestamp':ts}
+        'close_on_trigger':'False','stop_loss':str(stop_loss_price),'reduce_only':str(reduce_only),'timestamp':ts}
         query_string['sign'] = self.getSig(self.param2string(query_string))
         res = requests.post(url=order_url,data=query_string,proxies=proxies)
         return res
@@ -312,36 +330,12 @@ class TradeBot(object):
             if ROE < stop_ROE:    # close position
                 if pos_amt > 0:
                     self.order('Sell',abs(pos_amt),reduce_only=True)
-                elif positionAmt < 0:
+                elif pos_amt < 0:
                     self.order('Buy',abs(pos_amt),reduce_only=True)
                 else:
                     pass
-            elif ROE > 11.5:
-                stop_ROE = max(10.3,stop_ROE)
-            elif ROE > 10.3:
-                stop_ROE = max(9.2,stop_ROE)
-            elif ROE > 9.2:
-                stop_ROE = max(8.1,stop_ROE)
-            elif ROE > 8.1:
-                stop_ROE = max(7.1,stop_ROE)
-            elif ROE > 7.1:
-                stop_ROE = max(6.1,stop_ROE)
-            elif ROE > 6.1:
-                stop_ROE = max(5.2,stop_ROE)
-            elif ROE > 5.2:
-                stop_ROE = max(4.3,stop_ROE)
-            elif ROE > 4.3:
-                stop_ROE = max(3.5,stop_ROE)
-            elif ROE > 3.5:
-                stop_ROE = max(2.7,stop_ROE)
-            elif ROE > 2.7:
-                stop_ROE = max(2,stop_ROE)
-            elif ROE > 2:
-                stop_ROE = max(1.3,stop_ROE)
-            elif ROE > 1.3:
-                stop_ROE = max(0.7,stop_ROE)
-            elif ROE > 0.7:
-                stop_ROE = max(0.1,stop_ROE)
+            else:
+                stop_ROE = max(round(0.9*ROE-0.7,1),stop_ROE)
         # # calc and set stop_price
         # if pos_amt > 0:
         #     stop_price = round((1+stop_ROE/100)*entry_price,1)
@@ -360,10 +354,12 @@ class TradeBot(object):
 
         # open position
         if (open_price[-2] < ema_trend[-2] < close_price[-2]) and (min(open_price[-1],close_price[-1]) > ema_trend[-1]) and (pos_amt == 0):
-            self.orderMakerMultiTimes('Buy',qty)
+            # self.orderMakerMultiTimes('Buy',qty)
+            self.order('Buy',qty)
             stop_ROE = -0.7
         elif (open_price[-2] > ema_trend[-2] > close_price[-2]) and (max(open_price[-1],close_price[-1]) < ema_trend[-1]) and (pos_amt == 0):
-            self.orderMakerMultiTimes('Sell',qty)
+            # self.orderMakerMultiTimes('Sell',qty)
+            self.order('Sell',qty)
             stop_ROE = -0.7
         else:
             pass
@@ -374,7 +370,11 @@ class TradeBot(object):
 
 if __name__ == "__main__":
     try:
-        myBot = TradeBot()
-        myBot.run()
+        bot1 = TradeBot('ETHUSDT')
+        bot1.run()
+        bot2 = TradeBot('LTCUSDT')
+        bot2.run()
+        bot3 = TradeBot('SOLUSDT')
+        bot3.run()
     except Exception as e:
         sendMail(traceback.format_exc())
