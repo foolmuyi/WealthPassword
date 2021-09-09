@@ -13,6 +13,7 @@ import hashlib
 import numpy as np
 import smtplib
 import traceback
+import config
 from email.mime.text import MIMEText
 from tenacity import *
 
@@ -27,12 +28,12 @@ proxies = None
 # send email to me when error occures
 def sendMail(mail_content,subject='Bybit Error Occurred!'):
     mail_host = 'smtp.163.com'
-    mail_username = ''
-    mail_pw = ''
-    mail_recv = ['']
+    mail_username = config.mail_sender
+    mail_pw = config.mail_pw
+    mail_recv = config.mail_recv
     message = MIMEText(mail_content,'plain','utf-8')
     message['Subject'] = subject
-    message['From'] = ''
+    message['From'] = config.mail_sender
     message['To'] = mail_recv[0]
     smtpObj = smtplib.SMTP_SSL(mail_host,465)
     smtpObj.login(mail_username,mail_pw)
@@ -45,13 +46,13 @@ class TradeBot(object):
     # parameters initialization
     def __init__(self,symbol):
         self.base_url = 'https://api.bybit.com'
-        self.API_key = ''
-        self.API_secret = ''
+        self.API_key = config.API_key
+        self.API_secret = config.API_secret
         self.symbol = symbol
         self.coin = 'USDT'
         self.trend_param = 400
         self.leverage = 10
-        self.ROE_file = '/home/ubuntu/BybitBot/USDT/stopROE_'+self.symbol+'.json'
+        self.ROE_file = config.ROE_file
 
     # calcute ema
     def ema(self,data,period):
@@ -86,6 +87,7 @@ class TradeBot(object):
                 raw_data = json.loads(res.text)['result']
                 open_price_one_page = [float(each['open']) for each in raw_data]
                 close_price_one_page = [float(each['close']) for each in raw_data]
+                try_times = 0
             except Exception as e:
                 try_times += 1
                 continue
@@ -94,7 +96,8 @@ class TradeBot(object):
             page += 1
         price_data = {'open_price':open_price,'close_price':close_price}
         # check if the data if broken
-        if (len(price_data['open_price']) == (page_limit-1)*limit) and (len(price_data['close_price']) == (page_limit-1)*limit):
+        # sometimes the data the latest candle is not available on time, that's why I use len >= sth-1 instead of sth
+        if (len(price_data['open_price']) >= (page_limit-1)*limit-1) and (len(price_data['close_price']) >= (page_limit-1)*limit-1):
             pass
         else:
             price_data = None    # data broken. set price_data to None to trigger error and prevent trading
@@ -272,15 +275,18 @@ class TradeBot(object):
 
     # write stopROE value to file
     def writeStopROE(self,stop_ROE):
-        path=self.ROE_file
+        path = self.ROE_file
+        with open(path,'r') as f:
+            stop_data = json.load(f)
+        stop_data[self.symbol] = stop_ROE
         with open(path,'w') as f:
-            f.write(str(stop_ROE))
+            json.dump(stop_data,f)
 
     # read stopROE value from file
     def getStopROE(self):
-        path=self.ROE_file
+        path = self.ROE_file
         with open(path,'r') as f:
-            stop_ROE = json.load(f)
+            stop_ROE = json.load(f)[self.symbol]
         return stop_ROE
 
 
@@ -299,31 +305,15 @@ class TradeBot(object):
         if (pos_amt > 0) and (max(open_price[-1],close_price[-1]) < ema_trend[-1]):    # trend reversed, close long position
             self.order('Sell',abs(pos_amt),reduce_only=True)    # close position
             time.sleep(1)    # wait close position order to complete
-            # self.orderMakerMultiTimes('Sell',pos_amt)    # TODO: add reduce_only param to close position
         elif (pos_amt < 0) and (min(open_price[-1],close_price[-1]) > ema_trend[-1]):    # trend reversed, close short position
             self.order('Buy',abs(pos_amt),reduce_only=True)    # close position
             time.sleep(1)    # wait close position order to complete
-            # self.orderMakerMultiTimes('Buy',pos_amt)    # TODO: add reduce_only param to close position
         else:
             pass
 
         # trailing stop
         pos_amt = self.getPosAmt()
         stop_ROE = self.getStopROE()
-        # pos_info = self.getPositionInfo()
-        # # calc current stop_ROE
-        # if pos_amt > 0:
-        #     side = 'Buy'
-        #     entry_price = [each['entry_price'] for each in pos_info if each['side'] == side][0]
-        #     stop_price = [each['stop_loss'] for each in pos_info if each['side'] == side][0]
-        #     stop_ROE = round((stop_price-entry_price)/entry_price*100,2)
-        # elif pos_amt < 0:
-        #     side = 'Sell'
-        #     entry_price = [each['entry_price'] for each in pos_info if each['side'] == side][0]
-        #     stop_price = [each['stop_loss'] for each in pos_info if each['side'] == side][0]
-        #     stop_ROE = round((entry_price-stop_price)/entry_price*100,2)
-        # else:
-        #     pass
         # calc new stop_ROE
         if pos_amt != 0:
             ROE = self.calcROE()
@@ -370,7 +360,7 @@ class TradeBot(object):
 
 if __name__ == "__main__":
     try:
-        bot1 = TradeBot('ETHUSDT')
+        bot1 = TradeBot('FILUSDT')
         bot1.run()
         bot2 = TradeBot('LTCUSDT')
         bot2.run()
