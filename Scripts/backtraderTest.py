@@ -30,7 +30,7 @@ class SingleEMAStrategy(bt.Strategy):
     params = (
         ('fast_param',3),
         ('slow_param',6),
-        ('trend_param',550),
+        ('trend_param',400),
     )
 
     def log(self, txt, dt=None):

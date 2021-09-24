@@ -50,7 +50,9 @@ class TradeBot(object):
         self.API_secret = config.API_secret
         self.symbol = symbol
         self.coin = 'USDT'
-        self.trend_param = 400
+        self.fast_line = 50
+        self.middle_line = 100
+        self.slow_line = 200
         self.leverage = 10
         self.ROE_file = config.ROE_file
 
@@ -72,7 +74,7 @@ class TradeBot(object):
 
     # acquire k line data
     def getData(self):
-        interval = 5    # 5 minutes
+        interval = 30    # 30 minutes
         limit = 200    # bybit limits max to 200 per page
         page = 1    # 200 per page
         page_limit = 5    # get data from page 1 to 5
@@ -100,6 +102,7 @@ class TradeBot(object):
         if (len(price_data['open_price']) >= (page_limit-1)*limit-1) and (len(price_data['close_price']) >= (page_limit-1)*limit-1):
             pass
         else:
+            sendMail('open: '+str(len(price_data['open_price']))+'\nclose: '+str(len(price_data['close_price'])))
             price_data = None    # data broken. set price_data to None to trigger error and prevent trading
         return price_data
 
@@ -295,76 +298,58 @@ class TradeBot(object):
         price_data = self.getData()
         open_price = price_data['open_price'][:-1]    # remove the data of the current bar
         close_price = price_data['close_price'][:-1]    # remove the data of the current bar
-        ema_trend = self.ema(close_price,self.trend_param)
+        fast_line = self.ema(close_price,self.fast_line)
+        middle_line = self.ema(close_price,self.middle_line)
+        slow_line = self.ema(close_price,self.slow_line)
+        fmw = fast_line-middle_line    # fast middle width
 
         # cancel all open orders
         self.cancelAllOpenOrders()
 
         pos_amt = self.getPosAmt()
-        # close position to stop loss (trend reverse situation)
-        if (pos_amt > 0) and (max(open_price[-1],close_price[-1]) < ema_trend[-1]):    # trend reversed, close long position
-            self.order('Sell',abs(pos_amt),reduce_only=True)    # close position
-            time.sleep(1)    # wait close position order to complete
-        elif (pos_amt < 0) and (min(open_price[-1],close_price[-1]) > ema_trend[-1]):    # trend reversed, close short position
-            self.order('Buy',abs(pos_amt),reduce_only=True)    # close position
-            time.sleep(1)    # wait close position order to complete
+        # close position
+        if (pos_amt > 0):
+            self.setStopLoss('Buy',middle_line[-1])    # update stop loss price for extreme price change
+            if (close_price[-1] < fast_line[-1]):    # trend reversed, close long position
+                self.order('Sell',abs(pos_amt),reduce_only=True)    # close position
+                time.sleep(1)    # wait close position order to complete
+        elif (pos_amt < 0):
+            self.setStopLoss('Sell',middle_line[-1])
+            if (close_price[-1] > fast_line[-1]):    # trend reversed, close short position
+                self.order('Buy',abs(pos_amt),reduce_only=True)    # close position
+                time.sleep(1)    # wait close position order to complete
         else:
             pass
-
-        # trailing stop
-        pos_amt = self.getPosAmt()
-        stop_ROE = self.getStopROE()
-        # calc new stop_ROE
-        if pos_amt != 0:
-            ROE = self.calcROE()
-            if ROE < stop_ROE:    # close position
-                if pos_amt > 0:
-                    self.order('Sell',abs(pos_amt),reduce_only=True)
-                elif pos_amt < 0:
-                    self.order('Buy',abs(pos_amt),reduce_only=True)
-                else:
-                    pass
-            else:
-                stop_ROE = max(round(0.9*ROE-0.7,1),stop_ROE)
-        # # calc and set stop_price
-        # if pos_amt > 0:
-        #     stop_price = round((1+stop_ROE/100)*entry_price,1)
-        #     self.setStopLoss('Buy',stop_price)
-        # elif pos_amt < 0:
-        #     stop_price = round((1-stop_ROE/100)*entry_price,1)
-        #     self.setStopLoss('Sell',stop_price)
-        # else:
-        #     pass
-
-        # check position amount again before open position
-        pos_amt = self.getPosAmt()
 
         # get quantity to open new order
         qty = self.getMyQuantity()
 
         # open position
-        if (open_price[-2] < ema_trend[-2] < close_price[-2]) and (min(open_price[-1],close_price[-1]) > ema_trend[-1]) and (pos_amt == 0):
+        if (slow_line[-1] < middle_line[-1] < fast_line[-1]) and (close_price[-1] > fast_line[-1]) and (fmw[-3]<fmw[-2]<fmw[-1]) and (pos_amt == 0):
             # self.orderMakerMultiTimes('Buy',qty)
             self.order('Buy',qty)
-            stop_ROE = -0.7
-        elif (open_price[-2] > ema_trend[-2] > close_price[-2]) and (max(open_price[-1],close_price[-1]) < ema_trend[-1]) and (pos_amt == 0):
+            self.setStopLoss('Buy',middle_line[-1])    # set stop loss price for extreme price change
+        elif (slow_line[-1] > middle_line[-1] > fast_line[-1]) and (close_price[-1] < fast_line[-1]) and (fmw[-3]>fmw[-2]>fmw[-1]) and (pos_amt == 0):
             # self.orderMakerMultiTimes('Sell',qty)
             self.order('Sell',qty)
-            stop_ROE = -0.7
+            self.setStopLoss('Sell',middle_line[-1])
         else:
             pass
-
-        # save stopROE value to file
-        self.writeStopROE(stop_ROE)
 
 
 if __name__ == "__main__":
     try:
-        bot1 = TradeBot('FILUSDT')
+        bot1 = TradeBot('DOTUSDT')
         bot1.run()
         bot2 = TradeBot('LTCUSDT')
         bot2.run()
         bot3 = TradeBot('SOLUSDT')
         bot3.run()
+        bot4 = TradeBot('SUSHIUSDT')
+        bot4.run()
+        bot5 = TradeBot('LINKUSDT')
+        bot5.run()
+        bot6 = TradeBot('AXSUSDT')
+        bot6.run()
     except Exception as e:
         sendMail(traceback.format_exc())
