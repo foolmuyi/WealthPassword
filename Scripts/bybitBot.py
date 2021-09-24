@@ -301,7 +301,7 @@ class TradeBot(object):
         fast_line = self.ema(close_price,self.fast_line)
         middle_line = self.ema(close_price,self.middle_line)
         slow_line = self.ema(close_price,self.slow_line)
-        fmw = fast_line-middle_line    # fast middle width
+        fmw = [fast_line[i]-middle_line[i] for i in range(len(fast_line))]    # fast middle width
 
         # cancel all open orders
         self.cancelAllOpenOrders()
