@@ -8,7 +8,7 @@ from email.mime.text import MIMEText
 # send result via email
 def sendMail(mail_content,subject="A share"):
     mail_host = 'smtp.163.com'
-    mail_username = 'xxx@163.com'
+    mail_username = 'xx@163.com'
     mail_pw = ''
     mail_recv = ['']
     message = MIMEText(mail_content,'plain','utf-8')
@@ -52,20 +52,21 @@ for code in code_list:
             cond_2 = min(year_line[-60:] - main_line[-60:]) >= 0    # 年线高于均线
             cond_3 = hist_data['close'].values[-1] > main_line.values[-1] > 0.95*hist_data['close'].values[-1]    # 当日收盘价与60日线价差不超过5%
             cond_4 = hist_data['close'].values[-1] > fast_line.values[-1]    # 当日收盘价高于十日线
-            cond_5 = max(hist_data['close'][-350:]) > 1.5*hist_data['close'].values[-1]    # 最近一年半最高收盘价高于当日收盘价至少50%(充足上涨空间)
+            cond_5 = (main_line[-5:] == main_line[-5:].sort_values)    # 60日线处于上升趋势
+            cond_6 = max(hist_data['close'][-350:]) > 1.5*hist_data['close'].values[-1]    # 最近一年半最高收盘价高于当日收盘价至少50%(充足上涨空间)
 
-            cond_6 = min(ema_year_line[-60:] - ema_half_year_line[-60:]) > 0
-            cond_7 = min(ema_half_year_line[-60:] - ema_main_line[-60:]) > 0    # 年线、半年线、60日线空头排列
-            cond_8 = max(hist_data['low'][-5:] - ema_year_line[-5:]) > 0    # 近五日曾完全站上年线
-            cond_9 = hist_data['close'].values[-2] > ema_year_line.values[-2]    # 昨日收于年线上方
-            cond_10 = ema_year_line.values[-1] > hist_data['close'].values[-1] > ema_main_line.values[-1]    # 回踩年线
-            cond_11 = hist_data['close'].values[-1] > ema_main_line.values[-1] > 0.95*hist_data['close'].values[-1]    # 当日收盘价与60日线价差不超过5%
-            if (cond_1 and cond_2 and cond_3 and cond_4 and cond_5):
+            cond_7 = min(ema_year_line[-60:] - ema_half_year_line[-60:]) > 0
+            cond_8 = min(ema_half_year_line[-60:] - ema_main_line[-60:]) > 0    # 年线、半年线、60日线空头排列
+            cond_9 = max(hist_data['low'][-5:] - ema_year_line[-5:]) > 0    # 近五日曾完全站上年线
+            cond_10 = hist_data['close'].values[-2] > ema_year_line.values[-2]    # 昨日收于年线上方
+            cond_11 = ema_year_line.values[-1] > hist_data['close'].values[-1] > ema_main_line.values[-1]    # 回踩年线
+            cond_12 = hist_data['close'].values[-1] > ema_main_line.values[-1] > 0.95*hist_data['close'].values[-1]    # 当日收盘价与60日线价差不超过5%
+            if (cond_1 and cond_2 and cond_3 and cond_4 and cond_5 and cond_6):
                 # print(code+'   '+all_stock_dict[code])
                 star_stock_dict_1[code]=all_stock_dict[code]
             else:
                 pass
-            if (cond_6 and cond_7 and cond_8 and cond_9 and cond_10 and cond_11):
+            if (cond_7 and cond_8 and cond_9 and cond_10 and cond_11 and cond_12):
                 # print(code+'   '+all_stock_dict[code])
                 star_stock_dict_2[code]=all_stock_dict[code]
             else:
