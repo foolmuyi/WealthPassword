@@ -78,6 +78,32 @@ class SimpleStrategy(bt.Strategy):
 
         # self.log('OPERATION PROFIT, GROSS %.2f, NET %.2f' % (trade.pnl, trade.pnlcomm))
 
+    # 检查均线发散条件
+    def checkDiv(self):
+        fast_minus_month = pd.Series(self.ma_fast.get(size=5)) - pd.Series(self.ma_month.get(size=5))
+        cond_1 = fast_minus_month.equals(fast_minus_month.sort_values())
+        month_minus_quarter = pd.Series(self.ma_month.get(size=5)) - pd.Series(self.ma_quarter.get(size=5))
+        cond_2 = month_minus_quarter.equals(month_minus_quarter.sort_values())
+        quarter_minus_year = pd.Series(self.ma_quarter.get(size=5)) - pd.Series(self.ma_year.get(size=5))
+        cond_3 = quarter_minus_year.equals(quarter_minus_year.sort_values())
+        if (cond_1 and cond_2 and cond_3):
+            return True
+        else:
+            return False
+
+    # 检查均线发散趋势是否改变，用于判断顶部
+    def checkNotDiv(self):
+        fast_minus_month = pd.Series(self.ma_fast.get(size=6)) - pd.Series(self.ma_month.get(size=6))
+        cond_1 = not fast_minus_month.equals(fast_minus_month.sort_values())
+        month_minus_quarter = pd.Series(self.ma_month.get(size=6)) - pd.Series(self.ma_quarter.get(size=6))
+        cond_2 = not month_minus_quarter.equals(month_minus_quarter.sort_values())
+        quarter_minus_year = pd.Series(self.ma_quarter.get(size=6)) - pd.Series(self.ma_year.get(size=6))
+        cond_3 = not quarter_minus_year.equals(quarter_minus_year.sort_values())
+        if (cond_1 or cond_2 or cond_3):
+            return True
+        else:
+            return False
+
     def next(self):
         # Check if an order is pending ... if yes, we cannot send a 2nd one
         if self.order:
@@ -99,7 +125,8 @@ class SimpleStrategy(bt.Strategy):
             # cond_1_1 = (self.data.high[0] > 1.1*self.buyprice and self.data.close[0] < self.ma_quarter[0])    # 止盈
             # cond_1_2 = (self.data.close[-1] > 1.1*self.buyprice and self.data.close[0] < 1.1*self.buyprice)
             # cond_1 = cond_1_1 or cond_1_2
-            cond_1 = self.data.close[0] < self.stopprice
+            # cond_1 = self.data.close[0] < self.stopprice
+            cond_1 = self.checkDiv() and self.checkNotDiv()
             cond_2 = self.data.close[0] < self.ma_fast[0]    # 止损
             if (cond_1 or cond_2):
                 self.close()
@@ -120,7 +147,7 @@ if __name__ == '__main__':
     total_loss = 0
     win_num = 0
     loss_num = 0
-    # code_list = ['000692']
+    code_list = ['000692']
     for code in code_list:
         stock_data = get_data(code, '20120610', '20220610')
         # print(stock_data.head(600).to_string())
@@ -144,7 +171,7 @@ if __name__ == '__main__':
         else:
             pass
 
-        # cerebro.plot(style='candle')
+        cerebro.plot(style='candle')
 
     average_profit = total_profit/win_num
     average_loss = total_loss/loss_num
