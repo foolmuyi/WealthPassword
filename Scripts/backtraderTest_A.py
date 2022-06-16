@@ -18,7 +18,7 @@ import multiprocessing
 
 
 def get_data(code, start_date, end_date):
-    hist_data = ak.stock_zh_a_hist(symbol=code, period='daily', start_date=start_date, end_date=end_date, adjust='qfq')
+    hist_data = ak.stock_zh_a_hist(symbol=code, period='daily', start_date=start_date, end_date=end_date, adjust='hfq')
     df = hist_data.iloc[:, 0:6]
     df.columns = ['datetime', 'open', 'close', 'high', 'low', 'volume']
     df.index = pd.to_datetime(df.datetime)
@@ -207,16 +207,46 @@ class SimpleStrategy(bt.Strategy):
             if (cond_1 or cond_2):
                 self.close()
 
+            # 倒数第二日若还有持仓，则最后一日平仓，便于后续统计
+            try:
+                self.data.close[2]
+            except Exception as e:
+                self.close()
+
+
+# 获取符合条件的全部股票代码
+def getCodeList(start_date, end_date):
+    all_stock = ak.stock_zh_a_spot_em()
+    all_stock_dict = all_stock.set_index(['代码'])['名称'].to_dict()
+    all_code_list = list(all_stock_dict.keys())
+    code_selected = []
+    for code in all_code_list:
+        try:
+            hist_data = ak.stock_zh_a_hist(symbol=code, period='daily', start_date=start_date, end_date=end_date, adjust='hfq')
+        except:
+            continue
+        if (hist_data.shape[0] > 2*250) and (code[:2] not in ['30', '68']) and (code[:1] not in ['4', '8']):
+            code_selected.append(code)
+            print(code + '    ' + all_stock_dict[code])
+        else:
+            pass
+        time.sleep(0.12)
+    return code_selected
+
 
 if __name__ == '__main__':
-    code_list = ['600088', '000423', '603013', '600612', '600707', '603696', '600572', '603088', '002173', '603990', '000723', '600532', '600499', '002364', '603311', '002966', '600569', '002424', '600792', '603893', '600876', '603488', '603639', '000851', '600668', '000034', '601100', '002699', '603970', '000823', '002248', '600444', '002692', '600368', '600608', '603027', '603305', '000426', '000078', '000963', '600012', '002428', '603698', '000883', '603399', '600463', '603818', '000736', '002907', '600076', '002564', '600738', '600380', '002288', '002009', '000509', '002092', '002408', '002698', '600586', '002795', '600308', '600798', '002091', '002014', '600747', '600099', '002676', '603348', '600789', '600745', '002338', '002660', '600626', '002865', '600637', '603880', '600061', '600897', '000050', '002937', '601233', '002971', '002182', '000650', '600161', '600279', '002712', '603618', '002779', '002777', '002678', '603656', '002623', '600984', '603519', '601101', '002631', '603799', '000759']
+    # code_list = getCodeList()
+    code_list = ['000031', '600516', '601880', '002695', '603915', '000546', '000402', '002389', '600688', '000709', '000830', '002410', '600103', '600283', '601375', '603665', '002349', '002299', '000533', '600190', '600238', '600143', '000738', '000802', '601811', '603811', '600926', '601908', '002625', '600075', '002920', '603039', '002840', '603217', '600893', '600126', '600666', '000420', '002466', '600297', '002339', '002181', '603169', '600708', '601211', '600980', '600491', '002266', '000692', '002722', '600748', '603290', '600105', '601163', '002595', '600309', '000555', '002955', '002336', '600277', '603348', '603108', '002060', '002026', '600860', '000020', '002843', '601228', '000407', '600346', '603458', '002631', '002681', '600936', '600376', '600337', '601198', '002515', '000926', '000733', '000548', '002478', '002388', '603221', '002696', '002215', '002694', '600681', '000921', '002206', '002197', '603010', '601789', '000766', '002793', '000852', '603012', '002690', '603126', '600125']
+    start_date = '20170610'
+    end_date = '20220610'
     total_profit = 0
     total_loss = 0
     win_num = 0
     loss_num = 0
-    # code_list = ['603111']
+    trade_len = 0
+    # code_list = ['002640']
     for code in code_list:
-        stock_data = get_data(code, '20120610', '20220610')
+        stock_data = get_data(code, start_date, end_date)
         # print(stock_data.head(600).to_string())
         data = bt.feeds.PandasData(dataname=stock_data)
         cerebro = bt.Cerebro()
@@ -227,14 +257,23 @@ if __name__ == '__main__':
         cerebro.broker.setcommission(commission=0.001)
         cerebro.addsizer(bt.sizers.PercentSizer,percents=90)
 
-        cerebro.run()
+        # Analyzer
+        cerebro.addanalyzer(bt.analyzers.TradeAnalyzer, _name='tradeanalyzer')
+
+        thestrats = cerebro.run()
+        thestrat = thestrats[0]
         print(code + '  Final Portfolio Value: %.2f' % cerebro.broker.getvalue())
-        if cerebro.broker.getvalue() > 10000:
-            total_profit += (cerebro.broker.getvalue() - 10000)
-            win_num += 1
-        elif cerebro.broker.getvalue() < 10000:
-            total_loss += (cerebro.broker.getvalue() - 10000)
-            loss_num += 1
+        if cerebro.broker.getvalue() != 10000:
+            if thestrat.analyzers.tradeanalyzer.get_analysis().total.open != 0:
+                pass
+            else:
+                win_num += thestrat.analyzers.tradeanalyzer.get_analysis().won.total
+                loss_num += thestrat.analyzers.tradeanalyzer.get_analysis().lost.total
+                trade_len += thestrat.analyzers.tradeanalyzer.get_analysis().len.total
+                if cerebro.broker.getvalue() > 10000:
+                    total_profit += (cerebro.broker.getvalue() - 10000)
+                elif cerebro.broker.getvalue() < 10000:
+                    total_loss += (cerebro.broker.getvalue() - 10000)
         else:
             pass
 
@@ -244,11 +283,15 @@ if __name__ == '__main__':
     average_loss = total_loss/loss_num
     overall_average_profit = (total_profit + total_loss)/(win_num + loss_num)
     win_rate = win_num/(win_num + loss_num)
+    average_trade_length = trade_len/(win_num + loss_num)
+    print('Total profit: %.2f' % total_profit)
     print('Average profit: %.2f' % (average_profit))
     print('Average loss: %.2f' % (average_loss))
     print('Overall average profit: %.2f' % (overall_average_profit))
     print('Win rate: %.2f' % (win_rate))
     print('Decision value: %.2f' % (-average_profit/average_loss*win_rate))
+    print('Total trade times: %d' % (win_num+loss_num))
+    print('Average trade length: %.2f' % average_trade_length)
 
 
 
