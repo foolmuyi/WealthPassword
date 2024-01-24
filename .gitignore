@@ -1,4 +1,7 @@
 .vscode
 Data
 Binance
+Bybit
 .env
+.pyc
+.log

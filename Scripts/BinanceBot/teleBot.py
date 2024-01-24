@@ -16,4 +16,4 @@ bot = telegram.Bot(bot_token)
 loop = asyncio.get_event_loop()
 
 def sendMsg(text):
-    loop.run_until_complete(bot.send_message(chat_id=chat_id,text=text))
+    loop.run_until_complete(bot.send_message(chat_id=chat_id, text=text, parse_mode='MARKDOWN'))

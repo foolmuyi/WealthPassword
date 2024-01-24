@@ -2,6 +2,9 @@
 # -*- coding: utf-8 -*-
 
 
+import os
+
+
 class Config:
     # url configs
     BASE_URL = 'https://fapi.binance.com'
@@ -11,7 +14,7 @@ class Config:
 
     # EMA period configs
     FAST_PERIOD = 30
-    MID_PERRIOD = 60
+    MID_PERIOD = 60
     SLOW_PERIOD = 120
 
     # timeframe configs
@@ -22,5 +25,9 @@ class Config:
     # volume filter configs
     MIN_VOL_24H = 15000000    # 15 million USDT
 
-    # pairs.json path
-    PAIRS_PATH = './pairs.json'
+    # file to story qualified trade pairs
+    pairs_file_name = 'pairs.json'
+
+    # convert the json file name to absolute path
+    dir_path = os.path.dirname(os.path.abspath(__file__))
+    PAIRS_PATH = os.path.join(dir_path, pairs_file_name)

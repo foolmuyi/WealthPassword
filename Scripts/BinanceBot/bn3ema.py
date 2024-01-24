@@ -66,6 +66,18 @@ def check_ema(price, fast_period, mid_period, slow_period, shift):
     else:
         return 'WAIT'
 
+def cumul_ema_trend(price, fast_period, slow_period, span):
+    fast_ema = calc_ema(price, fast_period)
+    slow_ema = calc_ema(price, slow_period)
+    div = [fast_ema[i] - slow_ema[i] for i in range(min(len(fast_ema), len(slow_ema)))]
+    cumul_ema = sum(div[-span:])
+    if cumul_ema > 0:
+        return 'LONG'
+    elif cumul_ema < 0:
+        return 'SHORT'
+    else:
+        return 'WAIT'
+
 def run():
     filter_res = ''
     long_count = 0
@@ -75,45 +87,34 @@ def run():
     for pair in all_pairs:
         try:
             # print(str(all_pairs.index(pair)+1)+'/'+str(len(all_pairs)))
-            klines = get_klines(pair, small_interval)
-            close_price = klines['close'][:-1]    # delete the latest price (not finish)
-            # trend starts just now
-            ema_trend_1 = check_ema(close_price, fast_period, mid_period, slow_period, -1)
-            ema_trend_2 = check_ema(close_price, fast_period, mid_period, slow_period, -2)
-            if ema_trend_1 == 'LONG':
+            klines = get_klines(pair, mid_interval)
+            cumul_trend = cumul_ema_trend(klines['close'], fast_period, slow_period, 100)
+            # -1 index is the latest candle (not finish)
+            ema_trend = check_ema(klines['close'], fast_period, mid_period, slow_period, -2)
+            if cumul_trend == 'LONG' and ema_trend == 'LONG':
                 long_count += 1
-                if ema_trend_2 != 'LONG':    # indicate new long
-                    klines = get_klines(pair, mid_interval)
-                    close_price = klines['close'][:-1]
-                    ema_trend = check_ema(close_price, fast_period, mid_period, slow_period, -1)
-                    if ema_trend == 'LONG':
-                        klines = get_klines(pair, large_interval)
-                        close_price = klines['close'][:-1]
-                        ema_trend = check_ema(close_price, fast_period, mid_period, slow_period, -1)
-                        if ema_trend == 'LONG':
-                            filter_res += ('LONG\t'+pair+'\n')
-                        else:
-                            pass
-                    else:
-                        pass
+                klines = get_klines(pair, small_interval)
+                small_mid_ema = calc_ema(klines['close'], 3*mid_period)
+                small_slow_ema = calc_ema(klines['close'], 3*slow_period)
+                check_low_mid = klines['low'][-2] < small_mid_ema[-2] and klines['low'][-3] > small_mid_ema[-3]
+                check_low_slow = klines['low'][-2] < small_slow_ema[-2] and klines['low'][-3] > small_slow_ema[-3]
+                if check_low_slow:    # downward breakout
+                    filter_res += '{:<6}{:^14}{:>5}\n'.format('LONG', pair, 'SLOW')
+                elif check_low_mid:
+                    filter_res += '{:<6}{:^14}{:>5}\n'.format('LONG', pair, 'MID')
                 else:
                     pass
-            elif ema_trend_1 == 'SHORT':
+            elif cumul_trend == 'SHORT' and ema_trend == 'SHORT':
                 short_count += 1
-                if ema_trend_2 != 'SHORT':    # new short
-                    klines = get_klines(pair, mid_interval)
-                    close_price = klines['close'][:-1]
-                    ema_trend = check_ema(close_price, fast_period, mid_period, slow_period, -1)
-                    if ema_trend == 'SHORT':
-                        klines = get_klines(pair, large_interval)
-                        close_price = klines['close'][:-1]
-                        ema_trend = check_ema(close_price, fast_period, mid_period, slow_period, -1)
-                        if ema_trend == 'SHORT':
-                            filter_res += ('SHORT\t'+pair+'\n')
-                        else:
-                            pass
-                    else:
-                        pass
+                klines = get_klines(pair, small_interval)
+                small_mid_ema = calc_ema(klines['close'], 3*mid_period)
+                small_slow_ema = calc_ema(klines['close'], 3*slow_period)
+                check_high_mid = klines['high'][-2] > small_mid_ema[-2] and klines['high'][-3] < small_mid_ema[-3]
+                check_high_slow = klines['high'][-2] > small_slow_ema[-2] and klines['high'][-3] < small_slow_ema[-3]
+                if check_high_slow:    # upward breakout
+                    filter_res += '{:<6}{:^14}{:>5}\n'.format('SHORT', pair, 'SLOW')
+                elif check_high_mid:
+                    filter_res += '{:<6}{:^14}{:>5}\n'.format('SHORT', pair, 'MID')
                 else:
                     pass
             else:
@@ -124,9 +125,9 @@ def run():
         finally:
             continue
     if filter_res != '' or error_count > 10:
-        long_short_ratio = '\nLONG/SHORT = ' + str(long_count) + '/' + str(short_count)
+        long_short_ratio = '\nL/S = ' + str(long_count) + '/' + str(short_count)
         error_info = '\nerror(s): ' + str(error_count) + '/' + str(len(all_pairs))
-        message = filter_res + long_short_ratio + error_info
+        message = '```\n' + filter_res + long_short_ratio + error_info + '\n```'
         sendMsg(message)
 
 
