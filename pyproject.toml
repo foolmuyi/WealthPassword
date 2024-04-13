@@ -1,0 +1,46 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "kyws"
+version = "0.0.1"
+dependencies = [
+  "backtrader",
+  "telegram",
+  "numpy",
+  "pandas",
+  "requests",
+  "eth-account",
+  "web3"]
+requires-python = ">=3.5"
+authors = [
+  {name = "DeBiao", email = "muyiorlk@gmail.com"}
+]
+maintainers = [
+  {name = "DeBiao", email = "muyiorlk@gmail.com"}
+]
+description = "Kai Yuan Wang Shi"
+readme = "README.md"
+license = {file = "LICENSE"}
+classifiers = [
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python"
+]
+
+[project.urls]
+Source = "https://github.com/foolmuyi/WealthPassword"
+Repository = "https://github.com/foolmuyi/WealthPassword"
+
+[tool.hatch.build]
+exclude = [
+  "test*",
+  "Binance/",
+  "Data/",
+  "*.env",
+  "*.pyc",
+  "*.log",
+  "*.json",
+  "*.pdf",
+  ".vscode/",
+]
